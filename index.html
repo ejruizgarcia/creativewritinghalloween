@@ -30,7 +30,7 @@
             max-width: 32rem;
             width: 100%;
             text-align: center;
-            margin: auto; /* Centra la tarjeta horizontalmente */
+            margin: auto;
         }
         .btn-primary {
             background-image: linear-gradient(to right, #3b82f6, #4f46e5);
@@ -90,7 +90,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.875rem; /* Tamaño de fuente base */
+            font-size: 0.875rem;
             line-height: 1.25rem;
         }
         /* Media queries para que el tamaño de la fuente se adapte a la pantalla */
@@ -111,6 +111,22 @@
             cursor: move;
             z-index: 1000;
         }
+        .fixed-sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 25%;
+            padding: 2rem;
+            background-color: #161b22;
+            overflow-y: auto;
+        }
+        .main-content {
+            margin-left: 25%;
+            width: 75%;
+            padding: 2.5rem;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100 font-sans antialiased">
@@ -125,7 +141,7 @@
         // Array de títulos estáticos para la guía de escritura
         const GUIA_ESCRITURA_STEPS = [ "1. La Introducción", "2. El Nudo", "3. El Clímax", "4. El Desenlace" ];
         
-        // Datos de instrucciones y pistas para la guía de escritura (más variedad)
+        // Datos de instrucciones y pistas para la guía de escritura
         const GUIA_ESCRITURA_OPTIONS = {
             "1. La Introducción": {
                 instrucciones: [
@@ -247,7 +263,7 @@
         // Nuevo estado para almacenar las instrucciones y pistas generadas para la sesión actual
         let currentWritingSession = [];
         
-        let timerPosition = { x: window.innerWidth - 300, y: 50 }; // Posición inicial del temporizador
+        let timerPosition = { x: window.innerWidth - 300, y: 50 };
 
         // Referencia al contenedor principal de la aplicación
         const appContainer = document.getElementById('app');
@@ -351,12 +367,12 @@
             appContainer.innerHTML = `
                 <div class="flex flex-col md:flex-row h-screen bg-gray-900 text-white">
                     <!-- Panel lateral de la guía -->
-                    <div class="w-full md:w-1/4 p-8 bg-gray-800 shadow-2xl flex flex-col justify-between">
+                    <div class="w-full md:w-1/4 p-8 bg-gray-800 shadow-2xl flex flex-col justify-between md:fixed md:top-0 md:left-0 md:bottom-0 overflow-y-auto">
                         <div>
-                            <h2 class="text-2xl font-bold mb-6 text-blue-400">Guía de Escritura</h2>
+                            <h2 class="text-3xl font-bold mb-6 text-blue-400">Guía de Escritura</h2>
                             <div class="space-y-4">
                                 ${GUIA_ESCRITURA_STEPS.map((stepTitle, index) => `
-                                    <button data-index="${index}" class="w-full text-left p-4 rounded-lg font-semibold transition text-lg
+                                    <button data-index="${index}" class="w-full text-left p-4 rounded-lg font-semibold transition text-xl
                                         ${currentWritingStep === index ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}">
                                         ${stepTitle}
                                     </button>
@@ -380,14 +396,14 @@
                     </div>
 
                     <!-- Contenido principal de la guía -->
-                    <div class="flex-grow p-10 bg-gray-900 flex flex-col">
+                    <div class="md:w-3/4 flex-grow p-10 bg-gray-900 flex flex-col md:ml-[25%]">
                         <div class="p-8 rounded-2xl shadow-xl flex-grow flex flex-col justify-between border-4 ${borderColor}">
                             <div>
-                                <h3 class="text-6xl font-extrabold mb-6 text-white">${currentStep.titulo}</h3>
-                                <p class="text-3xl mb-8 text-gray-300">${currentStep.instruccion}</p>
+                                <h3 class="text-5xl sm:text-6xl font-extrabold mb-6 text-white">${currentStep.titulo}</h3>
+                                <p class="text-3xl sm:text-4xl mb-8 text-gray-300">${currentStep.instruccion}</p>
                                 <div class="flex items-start bg-gray-800 p-6 rounded-lg border-l-4 border-yellow-500">
                                     <span class="text-yellow-400 text-3xl font-bold mr-4">💡</span>
-                                    <p class="text-xl text-gray-300">${currentStep.pista}</p>
+                                    <p class="text-2xl text-gray-300">${currentStep.pista}</p>
                                 </div>
                             </div>
                             <div class="flex justify-between mt-8">
@@ -541,7 +557,6 @@
         const renderTimerOverlay = () => {
             const existingTimer = document.getElementById('timer-overlay');
             if (existingTimer) {
-                // Si el temporizador ya existe, no crees uno nuevo
                 return;
             }
 
@@ -770,7 +785,6 @@
         };
 
         const handleNextPlot = () => {
-            // Elimina el overlay actual antes de crear el siguiente
             const existingOverlay = document.getElementById('magnified-plot-overlay');
             if (existingOverlay) {
                 existingOverlay.remove();
@@ -780,7 +794,6 @@
         };
 
         const handlePrevPlot = () => {
-            // Elimina el overlay actual antes de crear el siguiente
             const existingOverlay = document.getElementById('magnified-plot-overlay');
             if (existingOverlay) {
                 existingOverlay.remove();
