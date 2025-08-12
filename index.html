@@ -68,11 +68,6 @@
             background-color: #ef4444;
             transform: scale(1.05);
         }
-        .grid-plots {
-            display: grid;
-            gap: 1rem;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        }
         .plot-card {
             background-color: #1f2937;
             border-width: 4px;
@@ -308,7 +303,7 @@
             appContainer.innerHTML = `
                 <div class="bg-gray-900 min-h-screen p-4 flex flex-col relative">
                     <h2 class="text-white text-4xl font-extrabold text-center mb-6">Trámas Generadas</h2>
-                    <div id="plots-container" class="flex-grow grid-plots p-4 lg:p-8 overflow-y-auto">
+                    <div id="plots-container" class="flex-grow grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 lg:p-8 overflow-y-auto">
                         ${plots.map((plot, index) => `
                             <div class="plot-card ${plotColors[index]}" data-index="${index}">
                                 <div class="text-2xl sm:text-3xl font-bold mb-4">${index + 1}</div>
@@ -392,202 +387,281 @@
                             </button>
                         </div>
                     </div>
-
-                    <!-- Contenido principal de la guía -->
-                    <div class="md:w-3/4 flex-grow p-10 bg-gray-900 flex flex-col md:ml-[25%]">
-                        <div class="p-8 rounded-2xl shadow-xl flex-grow flex flex-col justify-between border-4 ${borderColor}">
-                            <div>
-                                <h3 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 text-white">${currentStep.titulo}</h3>
-                                <p class="text-2xl sm:text-3xl lg:text-4xl mb-8 text-gray-300">${currentStep.instruccion}</p>
-                                <div class="flex items-start bg-gray-800 p-6 rounded-lg border-l-4 border-yellow-500">
-                                    <span class="text-yellow-400 text-3xl font-bold mr-4">💡</span>
-                                    <p class="text-xl sm:text-2xl text-gray-300">${currentStep.pista}</p>
+                    
+                    <!-- Contenido principal de la escritura -->
+                    <div class="md:ml-[25%] w-full md:w-[75%] p-8 bg-gray-900 overflow-y-auto">
+                        <div class="flex items-center justify-between mb-8">
+                            <h3 class="text-3xl font-extrabold text-white">${currentStep.titulo}</h3>
+                            <button id="hide-summary-btn" class="md:hidden py-2 px-4 rounded-lg font-bold text-white bg-gray-600 hover:bg-gray-700">
+                                <i data-lucide="arrow-left" class="inline-block mr-2 w-5 h-5"></i>
+                                Volver a la guía
+                            </button>
+                        </div>
+                        <div class="space-y-8">
+                            <div class="p-6 rounded-xl border-4 ${borderColor} bg-gray-800 shadow-lg">
+                                <h4 class="text-2xl font-bold mb-4 text-blue-300">Tu Trama</h4>
+                                <div class="text-xl font-medium space-y-2 text-gray-200">
+                                    <p><span class="font-bold text-red-300">Protagonista:</span> ${plots[magnifiedPlotIndex].protagonista}</p>
+                                    <p><span class="font-bold text-red-300">Escenario:</span> ${plots[magnifiedPlotIndex].escenario}</p>
+                                    <p><span class="font-bold text-red-300">Detonante:</span> ${plots[magnifiedPlotIndex].detonante}</p>
                                 </div>
                             </div>
-                            <div class="flex justify-between mt-8">
-                                <button id="prev-writing-step-btn" class="px-6 py-3 rounded-lg font-bold text-white text-xl bg-gray-600 hover:bg-gray-700 transition transform hover:scale-105" style="${currentWritingStep === 0 ? 'visibility: hidden;' : ''}">Anterior</button>
-                                <button id="next-writing-step-btn" class="px-6 py-3 rounded-lg font-bold text-white text-xl bg-blue-500 hover:bg-blue-600 transition transform hover:scale-105">
-                                    ${currentWritingStep < GUIA_ESCRITURA_STEPS.length - 1 ? 'Siguiente' : 'Terminar'}
-                                </button>
+                            <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+                                <h4 class="text-2xl font-bold mb-4 text-pink-300">Instrucción</h4>
+                                <p class="text-xl font-medium text-gray-200">${currentStep.instruccion}</p>
                             </div>
+                            <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+                                <h4 class="text-2xl font-bold mb-4 text-teal-300">Pista</h4>
+                                <p class="text-xl font-medium text-gray-200">${currentStep.pista}</p>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-between gap-4">
+                            <button id="prev-step-btn" class="w-full py-3 rounded-lg font-bold text-white bg-gray-600 hover:bg-gray-700 transition transform hover:scale-105" ${currentWritingStep === 0 ? 'disabled' : ''}>
+                                <i data-lucide="arrow-left" class="inline-block mr-2 w-5 h-5"></i>
+                                Paso anterior
+                            </button>
+                            <button id="next-step-btn" class="w-full py-3 rounded-lg font-bold text-white bg-blue-600 hover:bg-blue-700 transition transform hover:scale-105">
+                                <i data-lucide="arrow-right" class="inline-block mr-2 w-5 h-5"></i>
+                                ${currentWritingStep === GUIA_ESCRITURA_STEPS.length - 1 ? 'Finalizar' : 'Paso siguiente'}
+                            </button>
                         </div>
                     </div>
                 </div>
             `;
-            lucide.createIcons();
             
+            // Renderiza el temporizador si está visible
             if (showTimer) {
-                renderTimerOverlay();
+                renderTimer();
             }
 
-            document.querySelectorAll('[data-index]').forEach(btn => {
-                btn.addEventListener('click', (e) => {
+            lucide.createIcons();
+            
+            document.querySelectorAll('.fixed-sidebar button[data-index]').forEach(button => {
+                button.addEventListener('click', (e) => {
                     currentWritingStep = parseInt(e.currentTarget.getAttribute('data-index'));
                     renderApp();
                 });
+            });
+
+            document.getElementById('prev-step-btn').addEventListener('click', () => {
+                if (currentWritingStep > 0) {
+                    currentWritingStep--;
+                    renderApp();
+                }
+            });
+
+            document.getElementById('next-step-btn').addEventListener('click', () => {
+                if (currentWritingStep < GUIA_ESCRITURA_STEPS.length - 1) {
+                    currentWritingStep++;
+                    renderApp();
+                } else {
+                    view = 'summary';
+                    renderApp();
+                }
             });
 
             document.getElementById('view-summary-btn').addEventListener('click', () => {
                 view = 'summary';
                 renderApp();
             });
+            
             document.getElementById('show-timer-btn').addEventListener('click', () => {
                 showTimer = !showTimer;
-                if (showTimer) {
-                    renderTimerOverlay();
-                } else {
-                    const timerOverlay = document.getElementById('timer-overlay');
-                    if (timerOverlay) timerOverlay.remove();
-                }
+                renderApp();
             });
+
             document.getElementById('go-to-welcome-btn').addEventListener('click', () => {
                 view = 'welcome';
                 plots = [];
-                numPlots = 0;
+                currentWritingStep = 0;
                 magnifiedPlotIndex = null;
+                clearIntervals();
                 renderApp();
             });
-            document.getElementById('prev-writing-step-btn').addEventListener('click', () => {
-                if (currentWritingStep > 0) {
-                    currentWritingStep--;
+            
+            const hideSummaryBtn = document.getElementById('hide-summary-btn');
+            if(hideSummaryBtn){
+                hideSummaryBtn.addEventListener('click', () => {
+                     // Lógica para volver a la vista de la guía de escritura
+                    view = 'writing';
                     renderApp();
-                }
-            });
-            document.getElementById('next-writing-step-btn').addEventListener('click', () => {
-                if (currentWritingStep < GUIA_ESCRITURA_STEPS.length - 1) {
-                    currentWritingStep++;
-                    renderApp();
-                } else {
-                    view = 'plots';
-                    renderApp();
-                }
-            });
+                });
+            }
         };
 
-        // Renderiza la vista de resumen
+        // Renderiza el resumen de las tramas
         const renderSummaryView = () => {
             appContainer.innerHTML = `
-                <div class="min-h-screen bg-gray-900 text-white p-10 flex flex-col">
-                    <div class="flex-grow grid md:grid-cols-2 gap-8">
-                        ${currentWritingSession.map((step, index) => `
-                            <div class="p-6 rounded-2xl shadow-xl flex flex-col justify-between border-4 ${plotColors[index] || 'border-blue-500'}">
-                                <div>
-                                    <h3 class="text-4xl font-bold mb-4">${step.titulo}</h3>
-                                    <p class="text-2xl mb-4 text-gray-300">${step.instruccion}</p>
-                                    <div class="flex items-start bg-gray-800 p-3 rounded-lg border-l-4 border-yellow-500">
-                                        <span class="text-yellow-400 font-bold mr-2">💡</span>
-                                        <p class="text-lg text-gray-400">${step.pista}</p>
-                                    </div>
+                <div class="flex flex-col md:flex-row h-screen bg-gray-900 text-white">
+                    <!-- Panel lateral de la guía -->
+                    <div class="w-full md:w-1/4 p-8 bg-gray-800 shadow-2xl flex flex-col justify-between md:fixed md:top-0 md:left-0 md:bottom-0 overflow-y-auto">
+                        <div>
+                             <h2 class="text-3xl font-bold mb-6 text-blue-400">Guía de Escritura</h2>
+                            <div class="space-y-4">
+                                ${GUIA_ESCRITURA_STEPS.map((stepTitle, index) => `
+                                    <button data-index="${index}" class="w-full text-left p-4 rounded-lg font-semibold transition text-xl bg-gray-700 text-gray-300 hover:bg-gray-600">
+                                        ${stepTitle}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="space-y-4 mt-8">
+                            <button id="view-writing-btn" class="w-full py-3 rounded-lg font-bold text-white bg-blue-600 hover:bg-blue-700 transition transform hover:scale-105">
+                                <i data-lucide="edit" class="inline-block mr-2 w-5 h-5"></i>
+                                Volver a escribir
+                            </button>
+                             <button id="show-timer-btn" class="w-full py-3 rounded-lg font-bold text-white bg-gray-600 hover:bg-gray-700 transition transform hover:scale-105">
+                                <i data-lucide="timer" class="inline-block mr-2 w-5 h-5"></i>
+                                Temporizador
+                            </button>
+                            <button id="go-to-welcome-btn" class="w-full py-3 rounded-lg font-bold text-white bg-red-600 hover:bg-red-700 transition transform hover:scale-105">
+                                <i data-lucide="x" class="inline-block mr-2 w-5 h-5"></i>
+                                Ir a Estudio
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Contenido principal del resumen -->
+                    <div class="md:ml-[25%] w-full md:w-[75%] p-8 bg-gray-900 overflow-y-auto">
+                        <h3 class="text-3xl font-extrabold text-white mb-6">Resumen de la Sesión</h3>
+                        
+                        <div class="mb-8">
+                            <h4 class="text-2xl font-bold mb-4 text-blue-300">Trama Elegida</h4>
+                            <div class="p-6 rounded-xl border-4 ${plotColors[magnifiedPlotIndex] || plotColors[0]} bg-gray-800 shadow-lg">
+                                <div class="text-xl font-medium space-y-2 text-gray-200">
+                                    <p><span class="font-bold text-red-300">Protagonista:</span> ${plots[magnifiedPlotIndex].protagonista}</p>
+                                    <p><span class="font-bold text-red-300">Escenario:</span> ${plots[magnifiedPlotIndex].escenario}</p>
+                                    <p><span class="font-bold text-red-300">Detonante:</span> ${plots[magnifiedPlotIndex].detonante}</p>
                                 </div>
                             </div>
-                        `).join('')}
-                    </div>
-                    <div class="flex justify-center mt-8">
-                        <button id="close-summary-btn" class="px-8 py-4 rounded-full font-bold text-white text-2xl bg-red-600 hover:bg-red-700 transition transform hover:scale-105 shadow-xl">
-                            Cerrar
-                        </button>
+                        </div>
+
+                        <div class="space-y-6">
+                            <h4 class="text-2xl font-bold mb-4 text-pink-300">Guía Usada</h4>
+                            ${currentWritingSession.map(step => `
+                                <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+                                    <h5 class="text-xl font-bold mb-2 text-white">${step.titulo}</h5>
+                                    <p class="text-lg text-gray-300"><span class="font-semibold text-pink-300">Instrucción:</span> ${step.instruccion}</p>
+                                    <p class="text-lg text-gray-300"><span class="font-semibold text-teal-300">Pista:</span> ${step.pista}</p>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
                 </div>
             `;
-            document.getElementById('close-summary-btn').addEventListener('click', () => {
+            // Renderiza el temporizador si está visible
+            if (showTimer) {
+                renderTimer();
+            }
+
+            lucide.createIcons();
+            
+            document.querySelectorAll('.fixed-sidebar button[data-index]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    currentWritingStep = parseInt(e.currentTarget.getAttribute('data-index'));
+                    view = 'writing';
+                    renderApp();
+                });
+            });
+
+            document.getElementById('view-writing-btn').addEventListener('click', () => {
                 view = 'writing';
                 renderApp();
             });
+
+            document.getElementById('show-timer-btn').addEventListener('click', () => {
+                showTimer = !showTimer;
+                renderApp();
+            });
+
+            document.getElementById('go-to-welcome-btn').addEventListener('click', () => {
+                view = 'welcome';
+                plots = [];
+                currentWritingStep = 0;
+                magnifiedPlotIndex = null;
+                clearIntervals();
+                renderApp();
+            });
         };
 
-        // Renderiza el overlay de la trama magnificada
-        const renderMagnifiedPlotOverlay = () => {
-            if (magnifiedPlotIndex === null) return;
-            const plot = plots[magnifiedPlotIndex];
-            const borderColor = plotColors[magnifiedPlotIndex];
-
-            // Elimina el overlay existente si lo hay
-            const existingOverlay = document.getElementById('magnified-plot-overlay');
-            if (existingOverlay) {
-                existingOverlay.remove();
+        // Renderiza el temporizador flotante
+        const renderTimer = () => {
+            const existingTimer = document.querySelector('.movable-timer');
+            if (existingTimer) {
+                existingTimer.remove();
             }
 
-            const overlayHtml = document.createElement('div');
-            overlayHtml.id = 'magnified-plot-overlay'; // Asigna un ID para poder referenciarlo
-            overlayHtml.className = 'fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-75 p-4';
-            overlayHtml.innerHTML = `
-                <div class="relative p-8 rounded-2xl shadow-2xl max-w-2xl w-full bg-gray-800 text-white border-4 ${borderColor}">
-                    <button id="close-magnified-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white">
-                        <i data-lucide="x" class="w-8 h-8"></i>
+            const timerDiv = document.createElement('div');
+            timerDiv.id = 'movable-timer';
+            timerDiv.className = 'movable-timer bg-gray-800 rounded-xl p-4 shadow-xl border-2 border-yellow-500';
+            timerDiv.style.left = `${timerPosition.x}px`;
+            timerDiv.style.top = `${timerPosition.y}px`;
+            timerDiv.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <h5 class="text-xl font-bold text-yellow-300">Temporizador</h5>
+                    <button id="close-timer-btn" class="text-gray-400 hover:text-white">
+                        <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
-                    <h3 class="text-3xl font-extrabold mb-6 text-center">Trama #${magnifiedPlotIndex + 1}</h3>
-                    <div class="space-y-4 text-lg text-gray-300">
-                        <div class="bg-gray-700 rounded-lg p-4">
-                            <span class="font-bold text-blue-400 block">Protagonista:</span>
-                            ${plot.protagonista}
-                        </div>
-                        <div class="bg-gray-700 rounded-lg p-4">
-                            <span class="font-bold text-green-400 block">Escenario:</span>
-                            ${plot.escenario}
-                        </div>
-                        <div class="bg-gray-700 rounded-lg p-4">
-                            <span class="font-bold text-yellow-400 block">Detonante:</span>
-                            ${plot.detonante}
-                        </div>
-                    </div>
-                    <div class="flex justify-between mt-8">
-                        <button id="prev-plot-btn" class="p-3 rounded-full bg-gray-600 hover:bg-gray-700 transition transform hover:scale-110">
-                            <i data-lucide="arrow-left" class="w-6 h-6"></i>
-                        </button>
-                        <button id="next-plot-btn" class="p-3 rounded-full bg-gray-600 hover:bg-gray-700 transition transform hover:scale-110">
-                            <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                        </button>
-                    </div>
+                </div>
+                <div class="mt-4 flex items-center justify-center space-x-4">
+                    <input type="number" id="minutes-input" value="10" min="0" max="60" class="w-16 text-center p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-yellow-500">
+                    <span class="text-3xl font-extrabold text-yellow-400">:</span>
+                    <input type="number" id="seconds-input" value="0" min="0" max="59" class="w-16 text-center p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-yellow-500">
+                </div>
+                <div class="mt-4 flex justify-between space-x-2">
+                    <button id="start-timer-btn" class="flex-1 py-2 rounded-lg font-bold text-white bg-green-600 hover:bg-green-700 transition transform hover:scale-105">
+                        <i data-lucide="play" class="inline-block mr-1 w-5 h-5"></i>
+                        Iniciar
+                    </button>
+                    <button id="stop-timer-btn" class="flex-1 py-2 rounded-lg font-bold text-white bg-red-600 hover:bg-red-700 transition transform hover:scale-105">
+                        <i data-lucide="square" class="inline-block mr-1 w-5 h-5"></i>
+                        Detener
+                    </button>
+                    <button id="reset-timer-btn" class="flex-1 py-2 rounded-lg font-bold text-white bg-gray-600 hover:bg-gray-700 transition transform hover:scale-105">
+                        <i data-lucide="rotate-ccw" class="inline-block mr-1 w-5 h-5"></i>
+                        Reset
+                    </button>
                 </div>
             `;
-            document.body.appendChild(overlayHtml);
+            
+            document.body.appendChild(timerDiv);
             lucide.createIcons();
 
-            document.getElementById('close-magnified-btn').addEventListener('click', () => {
-                magnifiedPlotIndex = null;
-                overlayHtml.remove();
-            });
-            document.getElementById('prev-plot-btn').addEventListener('click', handlePrevPlot);
-            document.getElementById('next-plot-btn').addEventListener('click', handleNextPlot);
-        };
-
-        // Renderiza el overlay del temporizador
-        const renderTimerOverlay = () => {
-            const existingTimer = document.getElementById('timer-overlay');
-            if (existingTimer) {
-                return;
-            }
-
-            let minutes = 5;
-            let seconds = 0;
-            let isRunning = false;
             let timerInterval;
+            let totalSeconds;
+            let isRunning = false;
+            let startMinutes = 10;
+            let startSeconds = 0;
+            
+            const minutesInput = document.getElementById('minutes-input');
+            const secondsInput = document.getElementById('seconds-input');
+            const startBtn = document.getElementById('start-timer-btn');
+            const stopBtn = document.getElementById('stop-timer-btn');
+            const resetBtn = document.getElementById('reset-timer-btn');
+            const closeBtn = document.getElementById('close-timer-btn');
 
-            const updateTimerDisplay = () => {
-                const minutesElement = document.getElementById('timer-minutes');
-                const secondsElement = document.getElementById('timer-seconds');
-                if (minutesElement && secondsElement) {
-                    minutesElement.textContent = String(minutes).padStart(2, '0');
-                    secondsElement.textContent = String(seconds).padStart(2, '0');
-                }
+            const updateDisplay = () => {
+                minutesInput.value = Math.floor(totalSeconds / 60);
+                secondsInput.value = totalSeconds % 60;
             };
 
             const startTimer = () => {
                 if (isRunning) return;
                 isRunning = true;
+                if (totalSeconds === undefined) {
+                    totalSeconds = (parseInt(minutesInput.value) * 60) + parseInt(secondsInput.value);
+                    startMinutes = parseInt(minutesInput.value);
+                    startSeconds = parseInt(secondsInput.value);
+                }
                 timerInterval = setInterval(() => {
-                    if (seconds > 0) {
-                        seconds--;
-                    } else if (minutes > 0) {
-                        minutes--;
-                        seconds = 59;
-                    } else {
+                    if (totalSeconds <= 0) {
                         clearInterval(timerInterval);
                         isRunning = false;
-                        document.getElementById('play-icon').classList.remove('hidden');
-                        document.getElementById('pause-icon').classList.add('hidden');
+                        alert('¡Tiempo terminado!');
+                        return;
                     }
-                    updateTimerDisplay();
+                    totalSeconds--;
+                    updateDisplay();
                 }, 1000);
             };
 
@@ -596,218 +670,173 @@
                 isRunning = false;
             };
 
-            const overlayHtml = document.createElement('div');
-            overlayHtml.id = 'timer-overlay';
-            overlayHtml.className = 'movable-timer bg-gray-800 bg-opacity-80 border-2 border-blue-600 text-white rounded-xl shadow-2xl p-6 w-80';
-            overlayHtml.style.left = `${timerPosition.x}px`;
-            overlayHtml.style.top = `${timerPosition.y}px`;
+            const resetTimer = () => {
+                stopTimer();
+                totalSeconds = (startMinutes * 60) + startSeconds;
+                updateDisplay();
+            };
             
-            overlayHtml.innerHTML = `
-                <button id="close-timer-btn" class="absolute top-2 right-2 text-gray-400 hover:text-white">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
-                <h3 class="text-xl font-bold mb-4 text-center">Temporizador</h3>
-                <div class="flex justify-center items-center gap-4 mb-4">
-                    <!-- Controles para minutos -->
-                    <div class="flex flex-col items-center">
-                        <div class="flex gap-2">
-                            <button id="decrease-minutes-btn" class="text-2xl font-bold p-2 hover:bg-gray-700 rounded-full w-10">-</button>
-                            <button id="increase-minutes-btn" class="text-2xl font-bold p-2 hover:bg-gray-700 rounded-full w-10">+</button>
-                        </div>
-                        <div class="text-6xl font-mono text-center w-24">
-                            <span id="timer-minutes">${String(minutes).padStart(2, '0')}</span>
-                        </div>
-                        <span class="text-gray-400 text-sm">Minutos</span>
-                    </div>
-
-                    <div class="text-6xl font-mono">:</div>
-                    
-                    <!-- Controles para segundos -->
-                    <div class="flex flex-col items-center">
-                        <div class="flex gap-2">
-                            <button id="decrease-seconds-btn" class="text-2xl font-bold p-2 hover:bg-gray-700 rounded-full w-10">-</button>
-                            <button id="increase-seconds-btn" class="text-2xl font-bold p-2 hover:bg-gray-700 rounded-full w-10">+</button>
-                        </div>
-                        <div class="text-6xl font-mono text-center w-24">
-                            <span id="timer-seconds">${String(seconds).padStart(2, '0')}</span>
-                        </div>
-                        <span class="text-gray-400 text-sm">Segundos</span>
-                    </div>
-                </div>
-                <div class="flex justify-center gap-4">
-                    <button id="start-pause-btn" class="p-3 rounded-full bg-blue-500 hover:bg-blue-600 transition">
-                        <i data-lucide="play" id="play-icon" class="w-6 h-6 ${isRunning ? 'hidden' : ''}"></i>
-                        <i data-lucide="pause" id="pause-icon" class="w-6 h-6 ${!isRunning ? 'hidden' : ''}"></i>
-                    </button>
-                    <button id="reset-btn" class="p-3 rounded-full bg-gray-600 hover:bg-gray-700 transition">
-                        <i data-lucide="rotate-ccw" class="w-6 h-6"></i>
-                    </button>
-                </div>
-            `;
-            document.body.appendChild(overlayHtml);
-            lucide.createIcons();
-            updateTimerDisplay();
-
-            document.getElementById('close-timer-btn').addEventListener('click', () => {
+            closeBtn.addEventListener('click', () => {
                 showTimer = false;
                 stopTimer();
-                overlayHtml.remove();
+                renderApp();
             });
-            document.getElementById('start-pause-btn').addEventListener('click', () => {
-                if (isRunning) {
-                    stopTimer();
-                    document.getElementById('play-icon').classList.remove('hidden');
-                    document.getElementById('pause-icon').classList.add('hidden');
-                } else {
-                    startTimer();
-                    document.getElementById('play-icon').classList.add('hidden');
-                    document.getElementById('pause-icon').classList.remove('hidden');
-                }
-            });
-            document.getElementById('reset-btn').addEventListener('click', () => {
-                stopTimer();
-                minutes = 5;
-                seconds = 0;
-                updateTimerDisplay();
-                document.getElementById('play-icon').classList.remove('hidden');
-                document.getElementById('pause-icon').classList.add('hidden');
-            });
-            document.getElementById('increase-minutes-btn').addEventListener('click', () => {
-                if (!isRunning && minutes < 99) {
-                    minutes++;
-                    updateTimerDisplay();
-                }
-            });
-            document.getElementById('decrease-minutes-btn').addEventListener('click', () => {
-                if (!isRunning && minutes > 0) {
-                    minutes--;
-                    updateTimerDisplay();
-                }
-            });
-            document.getElementById('increase-seconds-btn').addEventListener('click', () => {
+
+            startBtn.addEventListener('click', startTimer);
+            stopBtn.addEventListener('click', stopTimer);
+            resetBtn.addEventListener('click', resetTimer);
+            
+            minutesInput.addEventListener('input', () => {
                 if (!isRunning) {
-                    seconds = (seconds + 10) % 60;
-                    updateTimerDisplay();
+                    startMinutes = parseInt(minutesInput.value) || 0;
                 }
             });
-            document.getElementById('decrease-seconds-btn').addEventListener('click', () => {
+            secondsInput.addEventListener('input', () => {
                 if (!isRunning) {
-                    seconds = (seconds - 10 + 60) % 60;
-                    updateTimerDisplay();
+                    startSeconds = parseInt(secondsInput.value) || 0;
                 }
             });
             
-            // Lógica para arrastrar el temporizador
+            // Hacer que el temporizador sea arrastrable
             let isDragging = false;
-            let offset = { x: 0, y: 0 };
-            overlayHtml.addEventListener('mousedown', (e) => {
+            let offsetX, offsetY;
+
+            timerDiv.addEventListener('mousedown', (e) => {
                 isDragging = true;
-                offset.x = e.clientX - overlayHtml.offsetLeft;
-                offset.y = e.clientY - overlayHtml.offsetTop;
+                offsetX = e.clientX - timerDiv.getBoundingClientRect().left;
+                offsetY = e.clientY - timerDiv.getBoundingClientRect().top;
+                timerDiv.style.cursor = 'grabbing';
             });
 
             document.addEventListener('mousemove', (e) => {
-                if (isDragging) {
-                    timerPosition.x = e.clientX - offset.x;
-                    timerPosition.y = e.clientY - offset.y;
-                    overlayHtml.style.left = `${timerPosition.x}px`;
-                    overlayHtml.style.top = `${timerPosition.y}px`;
-                }
+                if (!isDragging) return;
+                timerPosition.x = e.clientX - offsetX;
+                timerPosition.y = e.clientY - offsetY;
+                timerDiv.style.left = `${timerPosition.x}px`;
+                timerDiv.style.top = `${timerPosition.y}px`;
             });
 
             document.addEventListener('mouseup', () => {
                 isDragging = false;
+                timerDiv.style.cursor = 'move';
             });
         };
 
-        // Lógica de la aplicación
+        // Renderiza el pop-up de trama magnificada
+        const renderMagnifiedPlotOverlay = () => {
+            const plot = plots[magnifiedPlotIndex];
+            const borderColor = plotColors[magnifiedPlotIndex];
+
+            const overlay = document.createElement('div');
+            overlay.id = 'plot-overlay';
+            overlay.className = 'fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center p-4 z-50';
+            overlay.innerHTML = `
+                <div class="relative bg-gray-800 p-8 rounded-2xl shadow-2xl max-w-xl w-full">
+                    <button id="close-overlay-btn" class="absolute top-4 right-4 text-white hover:text-gray-400">
+                        <i data-lucide="x" class="w-8 h-8"></i>
+                    </button>
+                    <div class="text-center">
+                        <h3 class="text-4xl font-extrabold text-blue-400 mb-6">Trama #${magnifiedPlotIndex + 1}</h3>
+                        <div class="p-6 rounded-xl border-4 ${borderColor} bg-gray-700 shadow-inner">
+                            <div class="text-xl space-y-4 text-gray-200">
+                                <p><span class="font-bold text-red-300">Protagonista:</span> ${plot.protagonista}</p>
+                                <p><span class="font-bold text-red-300">Escenario:</span> ${plot.escenario}</p>
+                                <p><span class="font-bold text-red-300">Detonante:</span> ${plot.detonante}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            lucide.createIcons();
+            document.getElementById('close-overlay-btn').addEventListener('click', () => {
+                document.getElementById('plot-overlay').remove();
+            });
+        };
+
+        // Lógica de generación y "spinning"
         const handleCreatePlots = () => {
-            if (numPlots > 0 && numPlots <= 40) {
+            numPlots = parseInt(document.getElementById('num-plots-input').value) || 0;
+            if (numPlots > 0) {
                 plots = Array.from({ length: numPlots }, (_, i) => ({
-                    id: i,
                     protagonista: '',
                     escenario: '',
-                    detonante: '',
+                    detonante: ''
                 }));
-                plotColors = Array.from({ length: numPlots }, (v, i) => getBorderColor(i));
+                plotColors = Array.from({ length: numPlots }, (_, i) => getBorderColor(i));
                 view = 'plots';
                 renderApp();
             }
         };
 
-        const spinAndStop = (plotId) => {
-            spinningIntervals[plotId] = {
-                protagonista: setInterval(() => updatePlotContent(plotId, 'protagonista', PROTAGONISTAS), 100),
-                escenario: setInterval(() => updatePlotContent(plotId, 'escenario', ESCENARIOS), 100),
-                detonante: setInterval(() => updatePlotContent(plotId, 'detonante', DETONANTES), 100),
-            };
+        const spinAndStop = (index) => {
+            let spinCount = 0;
+            const maxSpins = 20 + Math.floor(Math.random() * 10);
+            
+            spinningIntervals[`protagonista-${index}`] = setInterval(() => {
+                const element = document.getElementById(`protagonista-${index}`);
+                element.textContent = PROTAGONISTAS[Math.floor(Math.random() * PROTAGONISTAS.length)];
+                spinCount++;
+                if (spinCount >= maxSpins) {
+                    clearInterval(spinningIntervals[`protagonista-${index}`]);
+                    plots[index].protagonista = element.textContent;
+                }
+            }, 50);
 
+            spinningIntervals[`escenario-${index}`] = setInterval(() => {
+                const element = document.getElementById(`escenario-${index}`);
+                element.textContent = ESCENARIOS[Math.floor(Math.random() * ESCENARIOS.length)];
+            }, 50);
+
+            spinningIntervals[`detonante-${index}`] = setInterval(() => {
+                const element = document.getElementById(`detonante-${index}`);
+                element.textContent = DETONANTES[Math.floor(Math.random() * DETONANTES.length)];
+            }, 50);
+            
+            // Detener el spinning después de un tiempo aleatorio
             setTimeout(() => {
-                stopSpinning(plotId);
-            }, 7000);
-        };
+                clearInterval(spinningIntervals[`protagonista-${index}`]);
+                clearInterval(spinningIntervals[`escenario-${index}`]);
+                clearInterval(spinningIntervals[`detonante-${index}`]);
+                
+                // Asegurar que el resultado final sea aleatorio
+                const protagonistElement = document.getElementById(`protagonista-${index}`);
+                if (protagonistElement) protagonistElement.textContent = PROTAGONISTAS[Math.floor(Math.random() * PROTAGONISTAS.length)];
+                plots[index].protagonista = protagonistElement.textContent;
+                
+                const scenarioElement = document.getElementById(`escenario-${index}`);
+                if (scenarioElement) scenarioElement.textContent = ESCENARIOS[Math.floor(Math.random() * ESCENARIOS.length)];
+                plots[index].escenario = scenarioElement.textContent;
 
-        const stopSpinning = (plotId) => {
-            Object.values(spinningIntervals[plotId]).forEach(clearInterval);
-            plots = plots.map(p =>
-                p.id === plotId
-                    ? {
-                        ...p,
-                        protagonista: PROTAGONISTAS[Math.floor(Math.random() * PROTAGONISTAS.length)],
-                        escenario: ESCENARIOS[Math.floor(Math.random() * ESCENARIOS.length)],
-                        detonante: DETONANTES[Math.floor(Math.random() * DETONANTES.length)],
-                    }
-                    : p
-            );
-            renderPlotsContent(); // Actualiza el contenido de las tarjetas
-            delete spinningIntervals[plotId];
-        };
+                const triggerElement = document.getElementById(`detonante-${index}`);
+                if (triggerElement) triggerElement.textContent = DETONANTES[Math.floor(Math.random() * DETONANTES.length)];
+                plots[index].detonante = triggerElement.textContent;
 
-        const updatePlotContent = (plotId, key, list) => {
-            const element = document.getElementById(`${key}-${plotId}`);
-            if (element) {
-                element.textContent = list[Math.floor(Math.random() * list.length)];
-            }
+            }, 2000 + Math.random() * 2000);
         };
         
-        const renderPlotsContent = () => {
-            plots.forEach((plot, index) => {
-                const protagEl = document.getElementById(`protagonista-${index}`);
-                const escenEl = document.getElementById(`escenario-${index}`);
-                const detonEl = document.getElementById(`detonante-${index}`);
-
-                if (protagEl && plot.protagonista) protagEl.textContent = plot.protagonista;
-                if (escenEl && plot.escenario) escenEl.textContent = plot.escenario;
-                if (detonEl && plot.detonante) detonEl.textContent = plot.detonante;
-            });
-        };
-
-        const handleNextPlot = () => {
-            const existingOverlay = document.getElementById('magnified-plot-overlay');
-            if (existingOverlay) {
-                existingOverlay.remove();
+        const clearIntervals = () => {
+            for (const key in spinningIntervals) {
+                if (spinningIntervals.hasOwnProperty(key)) {
+                    clearInterval(spinningIntervals[key]);
+                }
             }
-            magnifiedPlotIndex = (magnifiedPlotIndex + 1) % numPlots;
-            renderMagnifiedPlotOverlay();
+            spinningIntervals = {};
         };
+        
 
-        const handlePrevPlot = () => {
-            const existingOverlay = document.getElementById('magnified-plot-overlay');
-            if (existingOverlay) {
-                existingOverlay.remove();
-            }
-            magnifiedPlotIndex = (magnifiedPlotIndex - 1 + numPlots) % numPlots;
-            renderMagnifiedPlotOverlay();
-        };
-
-        // Función principal para renderizar la aplicación
+        // Controlador principal de renderizado
         const renderApp = () => {
-            // Limpia el contenedor antes de renderizar la nueva vista
-            appContainer.innerHTML = '';
-            // Cierra overlays si existen
-            const overlays = document.querySelectorAll('.fixed.inset-0');
-            overlays.forEach(o => o.remove());
-            
+            // Elimina cualquier temporizador o overlay existente antes de renderizar una nueva vista
+            const existingTimer = document.getElementById('movable-timer');
+            if (existingTimer) {
+                existingTimer.remove();
+            }
+             const existingOverlay = document.getElementById('plot-overlay');
+            if (existingOverlay) {
+                existingOverlay.remove();
+            }
+
             switch (view) {
                 case 'welcome':
                     renderWelcomeView();
@@ -821,11 +850,14 @@
                 case 'summary':
                     renderSummaryView();
                     break;
+                default:
+                    renderWelcomeView();
             }
         };
 
         // Inicia la aplicación al cargar la página
-        window.onload = renderApp;
+        document.addEventListener('DOMContentLoaded', renderApp);
+
     </script>
 </body>
 </html>
