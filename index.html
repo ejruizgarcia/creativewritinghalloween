@@ -30,6 +30,7 @@
             max-width: 32rem;
             width: 100%;
             text-align: center;
+            margin: auto; /* Centra la tarjeta horizontalmente */
         }
         .btn-primary {
             background-image: linear-gradient(to right, #3b82f6, #4f46e5);
@@ -89,6 +90,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 0.875rem; /* Tamaño de fuente base */
+            line-height: 1.25rem;
+        }
+        /* Media queries para que el tamaño de la fuente se adapte a la pantalla */
+        @media (min-width: 640px) {
+            .spinning-placeholder {
+                font-size: 1rem;
+                line-height: 1.5rem;
+            }
+        }
+        @media (min-width: 768px) {
+            .spinning-placeholder {
+                font-size: 1.125rem;
+                line-height: 1.75rem;
+            }
         }
         .movable-timer {
             position: fixed;
@@ -225,6 +241,8 @@
         let magnifiedPlotIndex = null;
         let currentWritingStep = 0;
         let showTimer = false;
+        // Nueva paleta de colores para las tarjetas
+        const COLOR_PALETTE = ['border-red-500', 'border-yellow-500', 'border-green-500', 'border-blue-500', 'border-pink-500', 'border-orange-500', 'border-purple-500', 'border-gray-500'];
         let plotColors = [];
         // Nuevo estado para almacenar las instrucciones y pistas generadas para la sesión actual
         let currentWritingSession = [];
@@ -234,23 +252,22 @@
         // Referencia al contenedor principal de la aplicación
         const appContainer = document.getElementById('app');
 
-        // Helper para obtener un color de borde aleatorio para las tarjetas
-        const getRandomBorderColor = () => {
-            const colors = ['border-blue-500', 'border-green-500', 'border-red-500', 'border-yellow-500', 'border-purple-500', 'border-indigo-500', 'border-pink-500'];
-            return colors[Math.floor(Math.random() * colors.length)];
+        // Helper para obtener un color de borde de la paleta
+        const getBorderColor = (index) => {
+            return COLOR_PALETTE[index % COLOR_PALETTE.length];
         };
 
         // Renderiza la vista de bienvenida
         const renderWelcomeView = () => {
             appContainer.innerHTML = `
                 <div class="container bg-gray-900 text-white">
-                    <div class="main-card flex flex-col items-center mx-auto">
+                    <div class="main-card flex flex-col items-center justify-center mx-auto">
                         <div class="flex items-center justify-center mb-6">
                             <i data-lucide="monitor" class="text-blue-400 mr-4 w-9 h-9"></i>
                             <h1 class="text-3xl font-extrabold text-blue-400">Modo-Live</h1>
                         </div>
-                        <p class="text-xl mb-6">Bienvenidos al modo-live, una actividad de escritura creativa para toda la clase.</p>
-                        <p class="text-xl mb-8">¿Cuántas historias se van a crear?</p>
+                        <p class="text-xl mb-6 text-center">Bienvenidos al modo-live, una actividad de escritura creativa para toda la clase.</p>
+                        <p class="text-xl mb-8 text-center">¿Cuántas historias se van a crear?</p>
                         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <input type="number" min="1" max="40" value="${numPlots}" id="num-plots-input"
                                 class="w-full sm:w-24 text-center p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
@@ -280,8 +297,8 @@
                     <div id="plots-container" class="flex-grow grid-plots p-4 lg:p-8 overflow-y-auto">
                         ${plots.map((plot, index) => `
                             <div class="plot-card ${plotColors[index]}" data-index="${index}">
-                                <div class="text-2xl font-bold mb-4">${index + 1}</div>
-                                <div class="space-y-2 text-sm text-gray-300">
+                                <div class="text-xl sm:text-2xl font-bold mb-4">${index + 1}</div>
+                                <div class="space-y-2 text-sm sm:text-base md:text-lg text-gray-300">
                                     <div class="bg-gray-700 rounded-lg p-2 spinning-placeholder" id="protagonista-${index}">...</div>
                                     <div class="bg-gray-700 rounded-lg p-2 spinning-placeholder" id="escenario-${index}">...</div>
                                     <div class="bg-gray-700 rounded-lg p-2 spinning-placeholder" id="detonante-${index}">...</div>
@@ -699,7 +716,7 @@
                     escenario: '',
                     detonante: '',
                 }));
-                plotColors = Array.from({ length: numPlots }, () => getRandomBorderColor());
+                plotColors = Array.from({ length: numPlots }, (v, i) => getBorderColor(i));
                 view = 'plots';
                 renderApp();
             }
