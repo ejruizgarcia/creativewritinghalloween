@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Escritura Creativa</title>
+    <!-- Incluye el CDN de Tailwind CSS para el estilo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Incluye los iconos de Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        .main-card {
+            background-color: #161b22;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            max-width: 32rem;
+            width: 100%;
+            text-align: center;
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, #3b82f6, #4f46e5);
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+        }
+        .btn-secondary {
+            background-color: #4b5563;
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        .btn-secondary:hover {
+            background-color: #6b7280;
+            transform: scale(1.05);
+        }
+        .btn-danger {
+            background-color: #dc2626;
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        .btn-danger:hover {
+            background-color: #ef4444;
+            transform: scale(1.05);
+        }
+        .grid-plots {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+        .plot-card {
+            background-color: #1f2937;
+            border-width: 4px;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .plot-card:hover {
+            transform: scale(1.05);
+        }
+        .spinning-placeholder {
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans antialiased">
+    <div id="app"></div>
+
+    <script>
+        // Datos de la aplicación
+        const PROTAGONISTAS = [ "Un/a fotógrafo/a de fenómenos paranormales", "Un/a periodista de sucesos", "Un/a detective aficionado/a", "Un/a repartidor/a nocturno/a", "Un/a vigilante de museo", "Un/a estudiante de arqueología", "Un/a explorador/a de cuevas", "Un/a técnico/a de mantenimiento del metro", "Un/a guía turístico/a en ruinas históricas", "Un/a coleccionista de objetos malditos", "Un/a radioaficionado/a solitario/a", "Un/a piloto de drones", "Un/a investigador/a de crímenes antiguos", "Un/a aficionado/a a la fotografía analógica", "Un/a ex-policía retirado/a", "Un/a conductor/a de autobús nocturno", "Un/a chef en un restaurante apartado", "Un/a estudiante de intercambio", "Un/a cuidador/a de faro", "Un/a creador/a de podcasts de misterio", "Un/a astrónomo/a amateur", "Un/a paramédico/a", "Un/a voluntario/a de la Cruz Roja", "Un/a excursionista solitario/a", "Un/a anticuario/a", "Un/a marinero/a de carga", "Un/a taxista de ciudad portuaria", "Un/a mecánico/a en un taller rural", "Un/a vendedor/a ambulante", "Un/a agente inmobiliario/a", "Un/a estudiante de arte", "Un/a hacker ético/a", "Un/a blogger de viajes", "Un/a refugiado/a", "Un/a buscador/a de tesoros", "Un/a camarógrafo/a de documentales", "Un/a guardaparques", "Un/a rescatista de montaña", "Un/a cuidador/a de cementerio", "Un/a pintor/a bohemio/a", "Un/a aprendiz de mago", "Un/a investigador/a universitario/a", "Un/a arqueólogo/a subacuático/a", "Un/a guardia de prisión", "Un/a conductor/a de tren", "Un/a restaurador/a de arte", "Un/a psíquico/a televisivo/a", "Un/a mochilero/a", "Un/a paramilitar retirado/a", "Un/a doctor/a rural" ];
+        const ESCENARIOS = [ "Un túnel ferroviario clausurado", "Un faro en medio de la tormenta", "Un cine abandonado", "Un hospital en cuarentena", "Una mansión victoriana", "Un laboratorio subterráneo", "Una escuela cerrada por décadas", "Un puerto pesquero desierto", "Una carretera sin fin", "Un aeropuerto olvidado", "Un monasterio en ruinas", "Un circo desmantelado", "Un mirador en la montaña", "Un castillo en la niebla", "Un búnker de guerra", "Un centro comercial abandonado", "Un campamento minero", "Una playa cubierta de niebla", "Un pantano solitario", "Un observatorio antiguo", "Una isla sin habitantes", "Un mercado nocturno", "Un puente colgante en mal estado", "Un túnel de servicios bajo la ciudad", "Un cementerio olvidado", "Un paso de montaña nevado", "Un bosque petrificado", "Un barco encallado", "Un cañón desértico", "Un barrio fantasma", "Un parque nacional cerrado", "Un jardín botánico abandonado", "Una presa inactiva", "Un cráter de meteorito", "Un refugio antinuclear", "Una plaza colonial vacía", "Una estación polar", "Un museo cerrado al público", "Un pueblo minero fantasma", "Un bosque de bambú", "Una base militar abandonada", "Un callejón sin salida", "Una autopista elevada", "Una fábrica en ruinas", "Un santuario olvidado", "Un lago congelado", "Un paso subterráneo inundado", "Un viejo matadero", "Un viaducto ferroviario" ];
+        const DETONANTES = [ "Un mensaje en una botella que aparece cada día", "Una radio que transmite voces antiguas", "Una sombra que te sigue incluso de día", "Una puerta que aparece en sitios distintos", "Un reloj que marca horas inexistentes", "Un cuaderno que escribe solo", "Un espejo que muestra otro lugar", "Un susurro detrás de la oreja", "Un animal que no deja de observarte", "Una carta sin remitente que cambia de texto", "Un olor a quemado sin fuego", "Una risa en una habitación vacía", "Un pozo del que provienen cantos", "Un objeto que siempre regresa a tu bolsillo", "Una silueta detrás de una ventana cerrada", "Un teléfono que llama desde tu propio número", "Una sombra que no coincide con tu movimiento", "Un mapa que dibuja rutas nuevas", "Una fotografía donde aparece alguien más", "Una voz que dice tu nombre en la multitud", "Un viento que susurra palabras", "Un sonido metálico en la madrugada", "Una estatua que cambia de posición", "Una puerta que se abre sola", "Un latido en las paredes", "Una caja fuerte que se abre sola", "Un cuadro que cambia de imagen", "Un objeto que se calienta sin motivo", "Un mensaje escrito en el espejo empañado", "Un eco que responde distinto", "Un canto que solo se oye bajo el agua", "Una lámpara que parpadea en código", "Una llave que abre cualquier puerta", "Un destello en la oscuridad", "Un animal que habla en sueños", "Un olor a flores inexistentes", "Un zapato en medio del camino", "Un anillo que aprieta por sí solo", "Un paso detrás de ti sin nadie", "Un grito ahogado en el viento", "Un papel con tu letra que no recuerdas haber escrito", "Un silbido repetitivo en la noche", "Unos olhos brillando en la oscuridad", "Una figura que siempre aparece en tus fotos", "Un pitido que solo tú escuchas", "Una piedra que se mueve sola", "Un llanto detrás de una pared", "Un crujido que se acerca cada noche", "Un nombre escrito en la arena que no conoces" ];
+
+        const GUIA_ESCRITURA = [
+            { titulo: "1. La Introducción", instruccion: "Toma tu papel y bolígrafo. Describe el escenario. ¿Cómo es? ¿Qué oye tu protagonista? Presenta a tu personaje. ¿Es su primera vez allí o es un veterano?", pista: "Usa al menos tres de los cinco sentidos. ¿Huele a polvo? ¿El suelo de madera cruje? ¿La única luz es la de su linterna?" },
+            { titulo: "2. El Nudo", instruccion: "Es el momento de que ocurra algo. Tu protagonista encuentra 'El Detonante'. ¿Cómo lo encuentra? ¿Qué hace? Escribe la escena. ¡Haz que tome una decisión arriesgada!", pista: "El diálogo interno es tu amigo. Haz que el personaje hable solo. 'No debería... pero... ¿y si...?'" },
+            { titulo: "3. El Clímax", instruccion: "Este es el momento de máxima tensión. El misterio se revela o el peligro ataca. ¡No des respiro al lector (ni a tu protagonista)!", pista: "Usa frases cortas y rápidas para acelerar el ritmo. ¡Impacto! ¡Sorpresa! ¡Acción!" },
+            { titulo: "4. El Desenlace", instruccion: "¿Cómo termina todo? ¿El protagonista escapa? ¿Resuelve el misterio? ¿O queda atrapado para siempre? Escribe el final de tu historia.", pista: "Un final puede ser cerrado (todo se resuelve) o abierto (deja una pregunta en el aire). ¡Ambos son válidos en el terror!" }
+        ];
+
+        // Estado de la aplicación
+        let view = 'welcome'; // 'welcome', 'plots', 'writing', 'summary'
+        let numPlots = 0;
+        let plots = [];
+        let spinningIntervals = {};
+        let magnifiedPlotIndex = null;
+        let currentWritingStep = 0;
+        let showTimer = false;
+        let plotColors = [];
+
+        // Referencia al contenedor principal de la aplicación
+        const appContainer = document.getElementById('app');
+
+        // Helper para obtener un color de borde aleatorio para las tarjetas
+        const getRandomBorderColor = () => {
+            const colors = ['border-blue-500', 'border-green-500', 'border-red-500', 'border-yellow-500', 'border-purple-500', 'border-indigo-500', 'border-pink-500'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        };
+
+        // Renderiza la vista de bienvenida
+        const renderWelcomeView = () => {
+            appContainer.innerHTML = `
+                <div class="container bg-gray-900 text-white">
+                    <div class="main-card">
+                        <div class="flex items-center justify-center mb-6">
+                            <i data-lucide="monitor" class="text-blue-400 mr-4 w-9 h-9"></i>
+                            <h1 class="text-3xl font-extrabold text-blue-400">Modo-Live</h1>
+                        </div>
+                        <p class="text-xl mb-6">Bienvenidos al modo-live, una actividad de escritura creativa para toda la clase.</p>
+                        <p class="text-xl mb-8">¿Cuántas historias se van a crear?</p>
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <input type="number" min="1" max="40" value="${numPlots}" id="num-plots-input"
+                                class="w-full sm:w-24 text-center p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                            <button id="create-plots-btn" class="w-full sm:w-auto px-6 py-3 rounded-lg font-bold text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 transition transform hover:scale-105 shadow-lg">
+                                ¡Crear tramas!
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            // Vuelve a renderizar los iconos de Lucide
+            lucide.createIcons();
+
+            document.getElementById('num-plots-input').addEventListener('input', (e) => {
+                numPlots = Math.min(40, Math.max(0, parseInt(e.target.value) || 0));
+                document.getElementById('create-plots-btn').disabled = (numPlots < 1 || numPlots > 40);
+            });
+
+            document.getElementById('create-plots-btn').addEventListener('click', handleCreatePlots);
+        };
+
+        // Renderiza la vista de las tramas
+        const renderPlotsView = () => {
+            appContainer.innerHTML = `
+                <div class="bg-gray-900 min-h-screen p-4 flex flex-col relative">
+                    <h2 class="text-white text-3xl font-extrabold text-center mb-6">Trámas Generadas</h2>
+                    <div id="plots-container" class="flex-grow grid-plots p-4 lg:p-8 overflow-y-auto">
+                        ${plots.map((plot, index) => `
+                            <div class="plot-card ${plotColors[index]}" data-index="${index}">
+                                <div class="text-2xl font-bold mb-4">${index + 1}</div>
+                                <div class="space-y-2 text-sm text-gray-300">
+                                    <div class="bg-gray-700 rounded-lg p-2 spinning-placeholder" id="protagonista-${index}">...</div>
+                                    <div class="bg-gray-700 rounded-lg p-2 spinning-placeholder" id="escenario-${index}">...</div>
+                                    <div class="bg-gray-700 rounded-lg p-2 spinning-placeholder" id="detonante-${index}">...</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="flex justify-center p-4">
+                        <button id="start-writing-btn" class="px-8 py-4 rounded-full font-bold text-lg text-white bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 transition transform hover:scale-105 shadow-xl">
+                            ¡Comenzar a escribir!
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.querySelectorAll('.plot-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const index = parseInt(e.currentTarget.getAttribute('data-index'));
+                    magnifiedPlotIndex = index;
+                    renderMagnifiedPlotOverlay();
+                });
+            });
+
+            document.getElementById('start-writing-btn').addEventListener('click', () => {
+                view = 'writing';
+                renderApp();
+            });
+
+            // Iniciar el "spinning"
+            plots.forEach((plot, index) => {
+                setTimeout(() => {
+                    spinAndStop(index);
+                }, index * 500);
+            });
+        };
+
+        // Renderiza la vista de la guía de escritura
+        const renderWritingView = () => {
+            const currentStep = GUIA_ESCRITURA[currentWritingStep];
+            const currentPlot = plots[magnifiedPlotIndex] || plots[0];
+            const borderColor = plotColors[magnifiedPlotIndex] || plotColors[0];
+
+            appContainer.innerHTML = `
+                <div class="flex flex-col md:flex-row h-screen bg-gray-900 text-white">
+                    <!-- Panel lateral de la guía -->
+                    <div class="w-full md:w-1/4 p-8 bg-gray-800 shadow-2xl flex flex-col justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-6 text-blue-400">Guía de Escritura</h2>
+                            <div class="space-y-4">
+                                ${GUIA_ESCRITURA.map((step, index) => `
+                                    <button data-index="${index}" class="w-full text-left p-4 rounded-lg font-semibold transition text-lg
+                                        ${currentWritingStep === index ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}">
+                                        ${step.titulo}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="space-y-4 mt-8">
+                            <button id="view-summary-btn" class="w-full py-3 rounded-lg font-bold text-white bg-gray-600 hover:bg-gray-700 transition transform hover:scale-105">
+                                <i data-lucide="book" class="inline-block mr-2 w-5 h-5"></i>
+                                Ver resumen
+                            </button>
+                            <button id="show-timer-btn" class="w-full py-3 rounded-lg font-bold text-white bg-gray-600 hover:bg-gray-700 transition transform hover:scale-105">
+                                <i data-lucide="timer" class="inline-block mr-2 w-5 h-5"></i>
+                                Temporizador
+                            </button>
+                            <button id="go-to-welcome-btn" class="w-full py-3 rounded-lg font-bold text-white bg-red-600 hover:bg-red-700 transition transform hover:scale-105">
+                                <i data-lucide="x" class="inline-block mr-2 w-5 h-5"></i>
+                                Ir a Estudio
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Contenido principal de la guía -->
+                    <div class="flex-grow p-10 bg-gray-900 flex flex-col">
+                        <div class="p-8 rounded-2xl shadow-xl flex-grow flex flex-col justify-between border-4 ${borderColor}">
+                            <div>
+                                <h3 class="text-4xl font-extrabold mb-4 text-white">${currentStep.titulo}</h3>
+                                <p class="text-xl mb-6 text-gray-300">${currentStep.instruccion}</p>
+                                <div class="flex items-start bg-gray-800 p-4 rounded-lg border-l-4 border-yellow-500">
+                                    <span class="text-yellow-400 text-xl font-bold mr-3">💡</span>
+                                    <p class="text-lg text-gray-300">${currentStep.pista}</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-8">
+                                <button id="prev-writing-step-btn" class="px-6 py-3 rounded-lg font-bold text-white bg-gray-600 hover:bg-gray-700 transition transform hover:scale-105" style="${currentWritingStep === 0 ? 'visibility: hidden;' : ''}">Anterior</button>
+                                <button id="next-writing-step-btn" class="px-6 py-3 rounded-lg font-bold text-white bg-blue-500 hover:bg-blue-600 transition transform hover:scale-105">
+                                    ${currentWritingStep < GUIA_ESCRITURA.length - 1 ? 'Siguiente' : 'Terminar'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+
+            document.querySelectorAll('[data-index]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    currentWritingStep = parseInt(e.currentTarget.getAttribute('data-index'));
+                    renderApp();
+                });
+            });
+
+            document.getElementById('view-summary-btn').addEventListener('click', () => {
+                view = 'summary';
+                renderApp();
+            });
+            document.getElementById('show-timer-btn').addEventListener('click', () => {
+                showTimer = true;
+                renderTimerOverlay();
+            });
+            document.getElementById('go-to-welcome-btn').addEventListener('click', () => {
+                view = 'welcome';
+                plots = [];
+                numPlots = 0;
+                magnifiedPlotIndex = null;
+                renderApp();
+            });
+            document.getElementById('prev-writing-step-btn').addEventListener('click', () => {
+                if (currentWritingStep > 0) {
+                    currentWritingStep--;
+                    renderApp();
+                }
+            });
+            document.getElementById('next-writing-step-btn').addEventListener('click', () => {
+                if (currentWritingStep < GUIA_ESCRITURA.length - 1) {
+                    currentWritingStep++;
+                    renderApp();
+                } else {
+                    view = 'plots';
+                    renderApp();
+                }
+            });
+        };
+
+        // Renderiza la vista de resumen
+        const renderSummaryView = () => {
+            appContainer.innerHTML = `
+                <div class="min-h-screen bg-gray-900 text-white p-10 flex flex-col">
+                    <div class="flex-grow grid md:grid-cols-2 gap-8">
+                        ${GUIA_ESCRITURA.map((step, index) => `
+                            <div class="p-6 rounded-2xl shadow-xl flex flex-col justify-between border-4 ${plotColors[index] || 'border-blue-500'}">
+                                <div>
+                                    <h3 class="text-2xl font-bold mb-4">${step.titulo}</h3>
+                                    <p class="text-lg mb-4 text-gray-300">${step.instruccion}</p>
+                                    <div class="flex items-start bg-gray-800 p-3 rounded-lg border-l-4 border-yellow-500">
+                                        <span class="text-yellow-400 font-bold mr-2">💡</span>
+                                        <p class="text-md text-gray-400">${step.pista}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="flex justify-center mt-8">
+                        <button id="close-summary-btn" class="px-8 py-4 rounded-full font-bold text-white bg-red-600 hover:bg-red-700 transition transform hover:scale-105 shadow-xl">
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('close-summary-btn').addEventListener('click', () => {
+                view = 'writing';
+                renderApp();
+            });
+        };
+
+        // Renderiza el overlay de la trama magnificada
+        const renderMagnifiedPlotOverlay = () => {
+            if (magnifiedPlotIndex === null) return;
+            const plot = plots[magnifiedPlotIndex];
+            const borderColor = plotColors[magnifiedPlotIndex];
+
+            const overlayHtml = document.createElement('div');
+            overlayHtml.className = 'fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-75 p-4';
+            overlayHtml.innerHTML = `
+                <div class="relative p-8 rounded-2xl shadow-2xl max-w-2xl w-full bg-gray-800 text-white border-4 ${borderColor}">
+                    <button id="close-magnified-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                        <i data-lucide="x" class="w-8 h-8"></i>
+                    </button>
+                    <h3 class="text-3xl font-extrabold mb-6 text-center">Trama #${magnifiedPlotIndex + 1}</h3>
+                    <div class="space-y-4 text-lg text-gray-300">
+                        <div class="bg-gray-700 rounded-lg p-4">
+                            <span class="font-bold text-blue-400 block">Protagonista:</span>
+                            ${plot.protagonista}
+                        </div>
+                        <div class="bg-gray-700 rounded-lg p-4">
+                            <span class="font-bold text-green-400 block">Escenario:</span>
+                            ${plot.escenario}
+                        </div>
+                        <div class="bg-gray-700 rounded-lg p-4">
+                            <span class="font-bold text-yellow-400 block">Detonante:</span>
+                            ${plot.detonante}
+                        </div>
+                    </div>
+                    <div class="flex justify-between mt-8">
+                        <button id="prev-plot-btn" class="p-3 rounded-full bg-gray-600 hover:bg-gray-700 transition transform hover:scale-110">
+                            <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                        </button>
+                        <button id="next-plot-btn" class="p-3 rounded-full bg-gray-600 hover:bg-gray-700 transition transform hover:scale-110">
+                            <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlayHtml);
+            lucide.createIcons();
+
+            document.getElementById('close-magnified-btn').addEventListener('click', () => {
+                magnifiedPlotIndex = null;
+                overlayHtml.remove();
+            });
+            document.getElementById('prev-plot-btn').addEventListener('click', handlePrevPlot);
+            document.getElementById('next-plot-btn').addEventListener('click', handleNextPlot);
+        };
+
+        // Renderiza el overlay del temporizador
+        const renderTimerOverlay = () => {
+            if (!showTimer) return;
+
+            let minutes = 5;
+            let seconds = 0;
+            let isRunning = false;
+            let timerInterval;
+
+            const updateTimerDisplay = () => {
+                const minutesElement = document.getElementById('timer-minutes');
+                const secondsElement = document.getElementById('timer-seconds');
+                if (minutesElement && secondsElement) {
+                    minutesElement.textContent = String(minutes).padStart(2, '0');
+                    secondsElement.textContent = String(seconds).padStart(2, '0');
+                }
+            };
+
+            const startTimer = () => {
+                if (isRunning) return;
+                isRunning = true;
+                timerInterval = setInterval(() => {
+                    if (seconds > 0) {
+                        seconds--;
+                    } else if (minutes > 0) {
+                        minutes--;
+                        seconds = 59;
+                    } else {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                    }
+                    updateTimerDisplay();
+                }, 1000);
+            };
+
+            const stopTimer = () => {
+                clearInterval(timerInterval);
+                isRunning = false;
+            };
+
+            const overlayHtml = document.createElement('div');
+            overlayHtml.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50';
+            overlayHtml.innerHTML = `
+                <div class="bg-gray-800 text-white rounded-xl shadow-2xl p-6 relative w-72">
+                    <button id="close-timer-btn" class="absolute top-2 right-2 text-gray-400 hover:text-white">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                    <h3 class="text-xl font-bold mb-4 text-center">Temporizador</h3>
+                    <div class="flex justify-center items-center gap-2 mb-4">
+                        <button id="decrease-time-btn" class="text-2xl font-bold p-2 hover:bg-gray-700 rounded-full">-</button>
+                        <div class="text-5xl font-mono text-center w-36">
+                            <span id="timer-minutes">${String(minutes).padStart(2, '0')}</span>:<span id="timer-seconds">${String(seconds).padStart(2, '0')}</span>
+                        </div>
+                        <button id="increase-time-btn" class="text-2xl font-bold p-2 hover:bg-gray-700 rounded-full">+</button>
+                    </div>
+                    <div class="flex justify-center gap-4">
+                        <button id="start-pause-btn" class="p-3 rounded-full bg-blue-500 hover:bg-blue-600 transition">
+                            <i data-lucide="play" id="play-icon" class="w-6 h-6 ${isRunning ? 'hidden' : ''}"></i>
+                            <i data-lucide="pause" id="pause-icon" class="w-6 h-6 ${!isRunning ? 'hidden' : ''}"></i>
+                        </button>
+                        <button id="reset-btn" class="p-3 rounded-full bg-gray-600 hover:bg-gray-700 transition">
+                            <i data-lucide="rotate-ccw" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlayHtml);
+            lucide.createIcons();
+            updateTimerDisplay();
+
+            document.getElementById('close-timer-btn').addEventListener('click', () => {
+                showTimer = false;
+                stopTimer();
+                overlayHtml.remove();
+            });
+            document.getElementById('start-pause-btn').addEventListener('click', () => {
+                if (isRunning) {
+                    stopTimer();
+                    document.getElementById('play-icon').classList.remove('hidden');
+                    document.getElementById('pause-icon').classList.add('hidden');
+                } else {
+                    startTimer();
+                    document.getElementById('play-icon').classList.add('hidden');
+                    document.getElementById('pause-icon').classList.remove('hidden');
+                }
+            });
+            document.getElementById('reset-btn').addEventListener('click', () => {
+                stopTimer();
+                minutes = 5;
+                seconds = 0;
+                updateTimerDisplay();
+                document.getElementById('play-icon').classList.remove('hidden');
+                document.getElementById('pause-icon').classList.add('hidden');
+            });
+            document.getElementById('increase-time-btn').addEventListener('click', () => {
+                if (!isRunning && minutes < 99) {
+                    minutes++;
+                    updateTimerDisplay();
+                }
+            });
+            document.getElementById('decrease-time-btn').addEventListener('click', () => {
+                if (!isRunning && minutes > 0) {
+                    minutes--;
+                    updateTimerDisplay();
+                }
+            });
+        };
+
+        // Lógica de la aplicación
+        const handleCreatePlots = () => {
+            if (numPlots > 0 && numPlots <= 40) {
+                plots = Array.from({ length: numPlots }, (_, i) => ({
+                    id: i,
+                    protagonista: '',
+                    escenario: '',
+                    detonante: '',
+                }));
+                plotColors = Array.from({ length: numPlots }, () => getRandomBorderColor());
+                view = 'plots';
+                renderApp();
+            }
+        };
+
+        const spinAndStop = (plotId) => {
+            spinningIntervals[plotId] = {
+                protagonista: setInterval(() => updatePlotContent(plotId, 'protagonista', PROTAGONISTAS), 100),
+                escenario: setInterval(() => updatePlotContent(plotId, 'escenario', ESCENARIOS), 100),
+                detonante: setInterval(() => updatePlotContent(plotId, 'detonante', DETONANTES), 100),
+            };
+
+            setTimeout(() => {
+                stopSpinning(plotId);
+            }, 7000);
+        };
+
+        const stopSpinning = (plotId) => {
+            Object.values(spinningIntervals[plotId]).forEach(clearInterval);
+            plots = plots.map(p =>
+                p.id === plotId
+                    ? {
+                        ...p,
+                        protagonista: PROTAGONISTAS[Math.floor(Math.random() * PROTAGONISTAS.length)],
+                        escenario: ESCENARIOS[Math.floor(Math.random() * ESCENARIOS.length)],
+                        detonante: DETONANTES[Math.floor(Math.random() * DETONANTES.length)],
+                    }
+                    : p
+            );
+            renderPlotsContent(); // Actualiza el contenido de las tarjetas
+            delete spinningIntervals[plotId];
+        };
+
+        const updatePlotContent = (plotId, key, list) => {
+            const element = document.getElementById(`${key}-${plotId}`);
+            if (element) {
+                element.textContent = list[Math.floor(Math.random() * list.length)];
+            }
+        };
+        
+        const renderPlotsContent = () => {
+            plots.forEach((plot, index) => {
+                document.getElementById(`protagonista-${index}`).textContent = plot.protagonista;
+                document.getElementById(`escenario-${index}`).textContent = plot.escenario;
+                document.getElementById(`detonante-${index}`).textContent = plot.detonante;
+            });
+        };
+
+        const handleNextPlot = () => {
+            magnifiedPlotIndex = (magnifiedPlotIndex + 1) % numPlots;
+            renderMagnifiedPlotOverlay();
+        };
+
+        const handlePrevPlot = () => {
+            magnifiedPlotIndex = (magnifiedPlotIndex - 1 + numPlots) % numPlots;
+            renderMagnifiedPlotOverlay();
+        };
+
+        // Función principal para renderizar la aplicación
+        const renderApp = () => {
+            // Limpia el contenedor antes de renderizar la nueva vista
+            appContainer.innerHTML = '';
+            // Cierra overlays si existen
+            const overlays = document.querySelectorAll('.fixed.inset-0');
+            overlays.forEach(o => o.remove());
+            
+            switch (view) {
+                case 'welcome':
+                    renderWelcomeView();
+                    break;
+                case 'plots':
+                    renderPlotsView();
+                    break;
+                case 'writing':
+                    renderWritingView();
+                    break;
+                case 'summary':
+                    renderSummaryView();
+                    break;
+            }
+        };
+
+        // Inicia la aplicación al cargar la página
+        window.onload = renderApp;
+    </script>
+</body>
+</html>
