@@ -106,12 +106,116 @@
         const ESCENARIOS = [ "Un túnel ferroviario clausurado", "Un faro en medio de la tormenta", "Un cine abandonado", "Un hospital en cuarentena", "Una mansión victoriana", "Un laboratorio subterráneo", "Una escuela cerrada por décadas", "Un puerto pesquero desierto", "Una carretera sin fin", "Un aeropuerto olvidado", "Un monasterio en ruinas", "Un circo desmantelado", "Un mirador en la montaña", "Un castillo en la niebla", "Un búnker de guerra", "Un centro comercial abandonado", "Un campamento minero", "Una playa cubierta de niebla", "Un pantano solitario", "Un observatorio antiguo", "Una isla sin habitantes", "Un mercado nocturno", "Un puente colgante en mal estado", "Un túnel de servicios bajo la ciudad", "Un cementerio olvidado", "Un paso de montaña nevado", "Un bosque petrificado", "Un barco encallado", "Un cañón desértico", "Un barrio fantasma", "Un parque nacional cerrado", "Un jardín botánico abandonado", "Una presa inactiva", "Un cráter de meteorito", "Un refugio antinuclear", "Una plaza colonial vacía", "Una estación polar", "Un museo cerrado al público", "Un pueblo minero fantasma", "Un bosque de bambú", "Una base militar abandonada", "Un callejón sin salida", "Una autopista elevada", "Una fábrica en ruinas", "Un santuario olvidado", "Un lago congelado", "Un paso subterráneo inundado", "Un viejo matadero", "Un viaducto ferroviario" ];
         const DETONANTES = [ "Un mensaje en una botella que aparece cada día", "Una radio que transmite voces antiguas", "Una sombra que te sigue incluso de día", "Una puerta que aparece en sitios distintos", "Un reloj que marca horas inexistentes", "Un cuaderno que escribe solo", "Un espejo que muestra otro lugar", "Un susurro detrás de la oreja", "Un animal que no deja de observarte", "Una carta sin remitente que cambia de texto", "Un olor a quemado sin fuego", "Una risa en una habitación vacía", "Un pozo del que provienen cantos", "Un objeto que siempre regresa a tu bolsillo", "Una silueta detrás de una ventana cerrada", "Un teléfono que llama desde tu propio número", "Una sombra que no coincide con tu movimiento", "Un mapa que dibuja rutas nuevas", "Una fotografía donde aparece alguien más", "Una voz que dice tu nombre en la multitud", "Un viento que susurra palabras", "Un sonido metálico en la madrugada", "Una estatua que cambia de posición", "Una puerta que se abre sola", "Un latido en las paredes", "Una caja fuerte que se abre sola", "Un cuadro que cambia de imagen", "Un objeto que se calienta sin motivo", "Un mensaje escrito en el espejo empañado", "Un eco que responde distinto", "Un canto que solo se oye bajo el agua", "Una lámpara que parpadea en código", "Una llave que abre cualquier puerta", "Un destello en la oscuridad", "Un animal que habla en sueños", "Un olor a flores inexistentes", "Un zapato en medio del camino", "Un anillo que aprieta por sí solo", "Un paso detrás de ti sin nadie", "Un grito ahogado en el viento", "Un papel con tu letra que no recuerdas haber escrito", "Un silbido repetitivo en la noche", "Unos olhos brillando en la oscuridad", "Una figura que siempre aparece en tus fotos", "Un pitido que solo tú escuchas", "Una piedra que se mueve sola", "Un llanto detrás de una pared", "Un crujido que se acerca cada noche", "Un nombre escrito en la arena que no conoces" ];
 
-        const GUIA_ESCRITURA = [
-            { titulo: "1. La Introducción", instruccion: "Toma tu papel y bolígrafo. Describe el escenario. ¿Cómo es? ¿Qué oye tu protagonista? Presenta a tu personaje. ¿Es su primera vez allí o es un veterano?", pista: "Usa al menos tres de los cinco sentidos. ¿Huele a polvo? ¿El suelo de madera cruje? ¿La única luz es la de su linterna?" },
-            { titulo: "2. El Nudo", instruccion: "Es el momento de que ocurra algo. Tu protagonista encuentra 'El Detonante'. ¿Cómo lo encuentra? ¿Qué hace? Escribe la escena. ¡Haz que tome una decisión arriesgada!", pista: "El diálogo interno es tu amigo. Haz que el personaje hable solo. 'No debería... pero... ¿y si...?'" },
-            { titulo: "3. El Clímax", instruccion: "Este es el momento de máxima tensión. El misterio se revela o el peligro ataca. ¡No des respiro al lector (ni a tu protagonista)!", pista: "Usa frases cortas y rápidas para acelerar el ritmo. ¡Impacto! ¡Sorpresa! ¡Acción!" },
-            { titulo: "4. El Desenlace", instruccion: "¿Cómo termina todo? ¿El protagonista escapa? ¿Resuelve el misterio? ¿O queda atrapado para siempre? Escribe el final de tu historia.", pista: "Un final puede ser cerrado (todo se resuelve) o abierto (deja una pregunta en el aire). ¡Ambos son válidos en el terror!" }
-        ];
+        // Array de títulos estáticos para la guía de escritura
+        const GUIA_ESCRITURA_STEPS = [ "1. La Introducción", "2. El Nudo", "3. El Clímax", "4. El Desenlace" ];
+        
+        // Datos de instrucciones y pistas para la guía de escritura (más variedad)
+        const GUIA_ESCRITURA_OPTIONS = {
+            "1. La Introducción": {
+                instrucciones: [
+                    "Toma tu papel y bolígrafo. Describe el escenario. ¿Cómo es? ¿Qué oye tu protagonista? Presenta a tu personaje. ¿Es su primera vez allí o es un veterano?",
+                    "Establece la escena y a tu protagonista. Describe el entorno con detalle, incluyendo los sonidos y olores que percibe el personaje. ¿Qué le trajo aquí?",
+                    "Comienza con tu protagonista ya en el escenario. ¿Qué está haciendo? ¿Cómo se siente? Usa los primeros párrafos para crear una atmósfera de misterio.",
+                    "Elige un punto de vista (primera o tercera persona) y describe el lugar a través de los ojos de tu personaje. ¿Qué ve que le resulta extraño o familiar?",
+                    "Presenta a tu personaje principal con sus miedos y motivaciones. ¿Qué lo hace vulnerable? ¿Qué lo hace peligroso? El escenario debe reflejar este estado de ánimo.",
+                    "Empieza con una acción. Tu protagonista está investigando o huyendo. Usa los flashbacks o el diálogo interno para revelar la información del entorno.",
+                    "Describe el escenario como si fuera un personaje más. ¿Qué secretos esconde? ¿Cómo interactúa el entorno con tu protagonista?",
+                    "Usa un contraste. El protagonista es alegre y el escenario lúgubre, o viceversa. ¿Qué pasa cuando estas dos fuerzas chocan?",
+                    "Crea una sensación de 'calma antes de la tormenta'. Describe el escenario con una normalidad que sabes que está a punto de romperse. Introduce a tu protagonista.",
+                    "Comienza con un sonido o un olor que desorienta al protagonista. ¿De dónde viene? ¿Qué reacción provoca? Luego, describe el escenario."
+                ],
+                pistas: [
+                    "Usa al menos tres de los cinco sentidos. ¿Huele a polvo? ¿El suelo de madera cruje? ¿La única luz es la de su linterna?",
+                    "Piensa en el 'show, don't tell'. En lugar de decir 'el lugar era espeluznante', describe las telarañas, el eco y la oscuridad.",
+                    "Elige una emoción principal para tu protagonista y haz que el entorno la intensifique. Si tiene miedo, que haya sombras; si está solo, que el espacio sea vasto.",
+                    "Juega con la iluminación. Una farola parpadeante, la luz de la luna o un reflejo en el metal pueden ser claves en la atmósfera.",
+                    "Elige un detalle concreto del escenario y dale importancia. Un objeto viejo, una mancha en la pared, un sonido lejano. ¿Qué significa?",
+                    "Introduce el tema de la historia sin revelarlo. Si es sobre fantasmas, haz que tu protagonista sienta un escalofrío inexplicable.",
+                    "La introducción debe plantear una pregunta. ¿Qué va a pasar? ¿Quién es este personaje? ¿Qué es este lugar? No la respondas aún.",
+                    "Usa el clima a tu favor. Niebla, lluvia o una noche sin estrellas pueden aumentar la sensación de aislamiento y miedo.",
+                    "Evita descripciones genéricas. En lugar de 'era una casa vieja', intenta 'era una casa vieja cuyas ventanas rotas parecían ojos huecos'.",
+                    "El primer párrafo es crucial. Capta la atención del lector con un detalle intrigante, una frase fuerte o un misterio sin resolver."
+                ]
+            },
+            "2. El Nudo": {
+                instrucciones: [
+                    "Es el momento de que ocurra algo. Tu protagonista encuentra 'El Detonante'. ¿Cómo lo encuentra? ¿Qué hace? Escribe la escena. ¡Haz que tome una decisión arriesgada!",
+                    "Tu protagonista se enfrenta al detonante. ¿Lo ignora o decide investigar? ¿Por qué toma esa decisión? Aumenta la tensión poco a poco, no todo de golpe.",
+                    "El detonante provoca una reacción. Tu protagonista no está solo; puede que un ser o una fuerza extraña haya notado su presencia. Describe la interacción.",
+                    "El detonante es el primer indicio de que algo no anda bien. ¿Qué otras señales empiezan a manifestarse? Haz que el protagonista se cuestione su cordura.",
+                    "Elige un segundo personaje o un obstáculo que impida al protagonista llegar al detonante. ¿Cómo lo sortea? ¿Qué precio paga por seguir adelante?",
+                    "Describe el detonante en detalle. ¿Qué aspecto tiene? ¿Qué sonido emite? ¿Qué sensación produce? Escribe cómo el protagonista se acerca a él y lo manipula.",
+                    "El detonante es un recuerdo o una revelación que el protagonista había reprimido. ¿Qué le hace sentir? ¿Cómo cambia su percepción de lo que está pasando?",
+                    "El protagonista encuentra el detonante por accidente. Un resbalón, una caída. ¿Qué sucede en el momento exacto del descubrimiento? ¿Es un antes y un después?",
+                    "Usa una cuenta atrás. El protagonista tiene un tiempo limitado para llegar al detonante. ¿Cómo maneja la presión? ¿Qué obstáculos se interponen en su camino?",
+                    "El detonante es algo que el protagonista pensaba que no existía. Describe el momento de la incredulidad y la posterior aceptación de una nueva realidad."
+                ],
+                pistas: [
+                    "El diálogo interno es tu amigo. Haz que el personaje hable solo. 'No debería... pero... ¿y si...?'",
+                    "Aumenta la tensión. Un chirrido, una luz parpadeante. Usa pequeñas pistas para generar anticipación antes de la gran revelación.",
+                    "La decisión del protagonista de acercarse al detonante debe tener un motivo, incluso si es solo la curiosidad. Asegúrate de que su decisión sea coherente con su personalidad.",
+                    "Piensa en las consecuencias del detonante. Si es un sonido, que el sonido se repita. Si es un objeto, que se mueva o cambie.",
+                    "Usa la acción para describir los sentimientos del personaje. Si tiene miedo, que sus manos tiemblen; si está fascinado, que se olvide de respirar.",
+                    "No reveles todo. El detonante debe ser un misterio en sí mismo que plantee más preguntas de las que responde.",
+                    "Crea una sensación de claustrofobia o agorafobia. Si están en un espacio pequeño, que la caja sea pesada; si están en uno grande, que el eco sea interminable.",
+                    "La música de fondo. Piensa en el 'sonido' de la escena. Un silencio total, un zumbido constante, el sonido de su propia respiración.",
+                    "La interacción con el detonante debe ser una escalada. Primero, lo ve. Luego, lo toca. Finalmente, el detonante lo afecta de alguna manera.",
+                    "No tengas miedo de hacer que tu personaje cometa un error. Que un tropiezo revele algo o que una decisión impulsiva tenga consecuencias inesperadas."
+                ]
+            },
+            "3. El Clímax": {
+                instrucciones: [
+                    "Este es el momento de máxima tensión. El misterio se revela o el peligro ataca. ¡No des respiro al lector (ni a tu protagonista)!",
+                    "El protagonista se enfrenta directamente a la fuente del miedo. Describe la lucha, la persecución o el descubrimiento final. El ritmo debe ser frenético.",
+                    "El clímax es una revelación que cambia todo lo que el protagonista creía saber. ¿Qué descubre? ¿Quién está detrás de todo? ¿Cuál es el verdadero horror?",
+                    "Elige un momento de 'ahora o nunca'. El protagonista debe hacer algo para sobrevivir, para resolver el misterio o para escapar. ¿Qué es lo que arriesga?",
+                    "El peligro está en su punto álgido. El protagonista debe ser más inteligente, más rápido o más valiente que lo que sea que le persigue. Describe el momento crucial.",
+                    "El clímax no es una acción, es una decisión. El protagonista debe elegir entre dos opciones horribles. ¿Qué elige y por qué?",
+                    "La atmósfera debe ser casi insoportable. Usa descripciones sensoriales intensas: el olor a metal, el calor de un fuego, el sonido ensordecedor de un grito.",
+                    "El clímax puede ser una batalla no física. Una guerra de ingenio, una confrontación emocional o una carrera contra el tiempo. ¿Qué hace que el protagonista sea digno de ganar?",
+                    "Usa los elementos del nudo para resolver el clímax. El objeto, el sonido o la persona que aparecieron antes, ahora tienen un papel crucial en la resolución.",
+                    "El protagonista está al borde del abismo, física o mentalmente. Describe el último intento desesperado por sobrevivir o por entender. ¿Funciona o no?"
+                ],
+                pistas: [
+                    "Usa frases cortas y rápidas para acelerar el ritmo. ¡Impacto! ¡Sorpresa! ¡Acción!",
+                    "El clímax debe tener consecuencias. El protagonista no debe salir ileso. Deja una cicatriz física o emocional.",
+                    "Utiliza el entorno a tu favor. Un pasillo que se derrumba, un objeto que cae, una puerta que se cierra. Que el escenario sea un peligro más.",
+                    "Elige un giro de la trama. Algo que el lector no esperaba. Un aliado se convierte en enemigo, el monstruo es en realidad un fantasma, el protagonista es el culpable.",
+                    "La lucha debe ser personal. El protagonista no solo lucha por su vida, lucha contra sus propios miedos o contra una injusticia pasada.",
+                    "Un clímax puede durar varios párrafos. Juega con la velocidad de la acción y la lentitud de la reflexión para mantener al lector en vilo.",
+                    "No te detengas a explicar. El lector debe entender lo que pasa a través de la acción y el diálogo. La explicación viene después.",
+                    "Elige un momento clave y descríbelo en cámara lenta. El tiempo se detiene mientras el protagonista toma una decisión vital o ve algo horrible.",
+                    "El clímax es el punto más alto del arco de personaje. El protagonista debe usar todo lo que ha aprendido para sobrevivir o fallar.",
+                    "Usa las emociones. Miedo, rabia, desesperación, triunfo. Haz que el lector sienta lo mismo que el protagonista en cada momento."
+                ]
+            },
+            "4. El Desenlace": {
+                instrucciones: [
+                    "¿Cómo termina todo? ¿El protagonista escapa? ¿Resuelve el misterio? ¿O queda atrapado para siempre? Escribe el final de tu historia.",
+                    "El protagonista ha sobrevivido. ¿Qué consecuencias ha dejado el clímax en él? ¿Ha cambiado? ¿Qué hace ahora con su vida? Describe su estado mental.",
+                    "El misterio ha sido resuelto. El protagonista entiende por qué todo ha pasado. Explica la verdad al lector, pero deja un pequeño cabo suelto para el futuro.",
+                    "Un final ambiguo. El protagonista escapa, pero el misterio no se ha resuelto. El lector se queda con la pregunta: ¿Realmente ha escapado?",
+                    "El horror persiste. El protagonista creía que había escapado, pero el peligro le sigue. El final es una advertencia, una amenaza o una promesa de una segunda parte.",
+                    "El protagonista ha fallado. No ha podido escapar o resolver el misterio. El final es trágico y melancólico, mostrando las consecuencias de su fracaso.",
+                    "La vuelta a la normalidad. Después de la experiencia, el protagonista vuelve a su vida, pero no es el mismo. Algo ha cambiado en su percepción de la realidad.",
+                    "Un final de sacrificio. El protagonista se sacrifica para salvar a otros o para detener el horror. Describe su último momento y lo que significa para la historia.",
+                    "Un final de 'todo fue un sueño'. ¿O no? El protagonista despierta, pero hay un detalle que le hace dudar. Describe este detalle y el horror de la incertidumbre.",
+                    "El final es un bucle. El protagonista ha vuelto al principio de la historia, pero con el conocimiento de lo que va a pasar. ¿Cómo reacciona?"
+                ],
+                pistas: [
+                    "Un final puede ser cerrado (todo se resuelve) o abierto (deja una pregunta en el aire). ¡Ambos son válidos en el terror!",
+                    "El final debe ser coherente con el tono de la historia. Si es una historia de terror puro, un final feliz puede no ser el adecuado.",
+                    "No expliques demasiado. El lector debe ser capaz de entender el final sin una exposición larga y aburrida. 'Show, don't tell' también aplica aquí.",
+                    "Cierra todos los cabos sueltos que el lector esperaba. O al menos, los más importantes. Los pequeños detalles pueden quedar en el aire.",
+                    "Elige un final impactante. Una última frase, un último sonido, una última imagen que se quede en la mente del lector.",
+                    "El final debe mostrar el crecimiento del personaje, o su total destrucción. ¿Ha aprendido la lección? ¿O ha sido vencido por el horror?",
+                    "Si el final es abierto, que la pregunta sea interesante. No dejes al lector con una simple falta de información, sino con un misterio que vale la pena pensar.",
+                    "Usa un símbolo o un objeto del principio de la historia en el final. ¿Qué significa ahora? ¿Ha cambiado su significado?",
+                    "No tengas miedo de un final triste o trágico. A veces, en el terror, no se puede ganar. El fracaso puede ser una historia poderosa.",
+                    "El final no tiene que ser el final de la historia, sino el final del viaje del protagonista. ¿Qué pasa después? Eso es para otra historia."
+                ]
+            }
+        };
 
         // Estado de la aplicación
         let view = 'welcome'; // 'welcome', 'plots', 'writing', 'summary'
@@ -122,6 +226,8 @@
         let currentWritingStep = 0;
         let showTimer = false;
         let plotColors = [];
+        // Nuevo estado para almacenar las instrucciones y pistas generadas para la sesión actual
+        let currentWritingSession = [];
         
         let timerPosition = { x: window.innerWidth - 300, y: 50 }; // Posición inicial del temporizador
 
@@ -138,7 +244,7 @@
         const renderWelcomeView = () => {
             appContainer.innerHTML = `
                 <div class="container bg-gray-900 text-white">
-                    <div class="main-card">
+                    <div class="main-card flex flex-col items-center mx-auto">
                         <div class="flex items-center justify-center mb-6">
                             <i data-lucide="monitor" class="text-blue-400 mr-4 w-9 h-9"></i>
                             <h1 class="text-3xl font-extrabold text-blue-400">Modo-Live</h1>
@@ -199,6 +305,15 @@
             });
 
             document.getElementById('start-writing-btn').addEventListener('click', () => {
+                // Genera las instrucciones y pistas para la sesión de escritura
+                currentWritingSession = GUIA_ESCRITURA_STEPS.map(stepTitle => {
+                    const opciones = GUIA_ESCRITURA_OPTIONS[stepTitle];
+                    return {
+                        titulo: stepTitle,
+                        instruccion: opciones.instrucciones[Math.floor(Math.random() * opciones.instrucciones.length)],
+                        pista: opciones.pistas[Math.floor(Math.random() * opciones.pistas.length)]
+                    };
+                });
                 view = 'writing';
                 renderApp();
             });
@@ -213,8 +328,7 @@
 
         // Renderiza la vista de la guía de escritura
         const renderWritingView = () => {
-            const currentStep = GUIA_ESCRITURA[currentWritingStep];
-            const currentPlot = plots[magnifiedPlotIndex] || plots[0];
+            const currentStep = currentWritingSession[currentWritingStep];
             const borderColor = plotColors[magnifiedPlotIndex] || plotColors[0];
 
             appContainer.innerHTML = `
@@ -224,10 +338,10 @@
                         <div>
                             <h2 class="text-2xl font-bold mb-6 text-blue-400">Guía de Escritura</h2>
                             <div class="space-y-4">
-                                ${GUIA_ESCRITURA.map((step, index) => `
+                                ${GUIA_ESCRITURA_STEPS.map((stepTitle, index) => `
                                     <button data-index="${index}" class="w-full text-left p-4 rounded-lg font-semibold transition text-lg
                                         ${currentWritingStep === index ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}">
-                                        ${step.titulo}
+                                        ${stepTitle}
                                     </button>
                                 `).join('')}
                             </div>
@@ -262,7 +376,7 @@
                             <div class="flex justify-between mt-8">
                                 <button id="prev-writing-step-btn" class="px-6 py-3 rounded-lg font-bold text-white bg-gray-600 hover:bg-gray-700 transition transform hover:scale-105" style="${currentWritingStep === 0 ? 'visibility: hidden;' : ''}">Anterior</button>
                                 <button id="next-writing-step-btn" class="px-6 py-3 rounded-lg font-bold text-white bg-blue-500 hover:bg-blue-600 transition transform hover:scale-105">
-                                    ${currentWritingStep < GUIA_ESCRITURA.length - 1 ? 'Siguiente' : 'Terminar'}
+                                    ${currentWritingStep < GUIA_ESCRITURA_STEPS.length - 1 ? 'Siguiente' : 'Terminar'}
                                 </button>
                             </div>
                         </div>
@@ -309,7 +423,7 @@
                 }
             });
             document.getElementById('next-writing-step-btn').addEventListener('click', () => {
-                if (currentWritingStep < GUIA_ESCRITURA.length - 1) {
+                if (currentWritingStep < GUIA_ESCRITURA_STEPS.length - 1) {
                     currentWritingStep++;
                     renderApp();
                 } else {
@@ -324,7 +438,7 @@
             appContainer.innerHTML = `
                 <div class="min-h-screen bg-gray-900 text-white p-10 flex flex-col">
                     <div class="flex-grow grid md:grid-cols-2 gap-8">
-                        ${GUIA_ESCRITURA.map((step, index) => `
+                        ${currentWritingSession.map((step, index) => `
                             <div class="p-6 rounded-2xl shadow-xl flex flex-col justify-between border-4 ${plotColors[index] || 'border-blue-500'}">
                                 <div>
                                     <h3 class="text-4xl font-bold mb-4">${step.titulo}</h3>
