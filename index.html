@@ -130,7 +130,7 @@
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100 font-sans antialiased">
-    <div id="app"></div>
+    <div id="app" class="flex items-center justify-center min-h-screen"></div>
 
     <script>
         // Datos de la aplicación
@@ -276,21 +276,19 @@
         // Renderiza la vista de bienvenida
         const renderWelcomeView = () => {
             appContainer.innerHTML = `
-                <div class="container bg-gray-900 text-white">
-                    <div class="main-card flex flex-col items-center justify-center mx-auto">
-                        <div class="flex items-center justify-center mb-6">
-                            <i data-lucide="monitor" class="text-blue-400 mr-4 w-9 h-9"></i>
-                            <h1 class="text-3xl font-extrabold text-blue-400">Modo-Live</h1>
-                        </div>
-                        <p class="text-xl mb-6 text-center">Bienvenidos al modo-live, una actividad de escritura creativa para toda la clase.</p>
-                        <p class="text-xl mb-8 text-center">¿Cuántas historias se van a crear?</p>
-                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <input type="number" min="1" max="40" value="${numPlots}" id="num-plots-input"
-                                class="w-full sm:w-24 text-center p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
-                            <button id="create-plots-btn" class="w-full sm:w-auto px-6 py-3 rounded-lg font-bold text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 transition transform hover:scale-105 shadow-lg">
-                                ¡Crear tramas!
-                            </button>
-                        </div>
+                <div class="main-card flex flex-col items-center justify-center mx-auto">
+                    <div class="flex items-center justify-center mb-6">
+                        <i data-lucide="monitor" class="text-blue-400 mr-4 w-9 h-9"></i>
+                        <h1 class="text-3xl font-extrabold text-blue-400">Modo-Live</h1>
+                    </div>
+                    <p class="text-2xl mb-6 text-center">Bienvenidos al modo-live, una actividad de escritura creativa para toda la clase.</p>
+                    <p class="text-2xl mb-8 text-center">¿Cuántas historias se van a crear?</p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <input type="number" min="1" max="40" value="${numPlots}" id="num-plots-input"
+                            class="w-full sm:w-24 text-center p-3 rounded-lg bg-gray-700 text-white text-2xl border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                        <button id="create-plots-btn" class="w-full sm:w-auto px-6 py-3 rounded-lg text-xl font-bold text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 transition transform hover:scale-105 shadow-lg">
+                            ¡Crear tramas!
+                        </button>
                     </div>
                 </div>
             `;
@@ -309,12 +307,12 @@
         const renderPlotsView = () => {
             appContainer.innerHTML = `
                 <div class="bg-gray-900 min-h-screen p-4 flex flex-col relative">
-                    <h2 class="text-white text-3xl font-extrabold text-center mb-6">Trámas Generadas</h2>
+                    <h2 class="text-white text-4xl font-extrabold text-center mb-6">Trámas Generadas</h2>
                     <div id="plots-container" class="flex-grow grid-plots p-4 lg:p-8 overflow-y-auto">
                         ${plots.map((plot, index) => `
                             <div class="plot-card ${plotColors[index]}" data-index="${index}">
-                                <div class="text-xl sm:text-2xl font-bold mb-4">${index + 1}</div>
-                                <div class="space-y-2 text-sm sm:text-base md:text-lg text-gray-300">
+                                <div class="text-2xl sm:text-3xl font-bold mb-4">${index + 1}</div>
+                                <div class="space-y-2 text-xl sm:text-2xl md:text-3xl text-gray-300">
                                     <div class="bg-gray-700 rounded-lg p-2 spinning-placeholder" id="protagonista-${index}">...</div>
                                     <div class="bg-gray-700 rounded-lg p-2 spinning-placeholder" id="escenario-${index}">...</div>
                                     <div class="bg-gray-700 rounded-lg p-2 spinning-placeholder" id="detonante-${index}">...</div>
@@ -323,7 +321,7 @@
                         `).join('')}
                     </div>
                     <div class="flex justify-center p-4">
-                        <button id="start-writing-btn" class="px-8 py-4 rounded-full font-bold text-lg text-white bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 transition transform hover:scale-105 shadow-xl">
+                        <button id="start-writing-btn" class="px-8 py-4 rounded-full font-bold text-2xl text-white bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 transition transform hover:scale-105 shadow-xl">
                             ¡Comenzar a escribir!
                         </button>
                     </div>
@@ -399,16 +397,16 @@
                     <div class="md:w-3/4 flex-grow p-10 bg-gray-900 flex flex-col md:ml-[25%]">
                         <div class="p-8 rounded-2xl shadow-xl flex-grow flex flex-col justify-between border-4 ${borderColor}">
                             <div>
-                                <h3 class="text-5xl sm:text-6xl font-extrabold mb-6 text-white">${currentStep.titulo}</h3>
-                                <p class="text-3xl sm:text-4xl mb-8 text-gray-300">${currentStep.instruccion}</p>
+                                <h3 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 text-white">${currentStep.titulo}</h3>
+                                <p class="text-2xl sm:text-3xl lg:text-4xl mb-8 text-gray-300">${currentStep.instruccion}</p>
                                 <div class="flex items-start bg-gray-800 p-6 rounded-lg border-l-4 border-yellow-500">
                                     <span class="text-yellow-400 text-3xl font-bold mr-4">💡</span>
-                                    <p class="text-2xl text-gray-300">${currentStep.pista}</p>
+                                    <p class="text-xl sm:text-2xl text-gray-300">${currentStep.pista}</p>
                                 </div>
                             </div>
                             <div class="flex justify-between mt-8">
-                                <button id="prev-writing-step-btn" class="px-6 py-3 rounded-lg font-bold text-white bg-gray-600 hover:bg-gray-700 transition transform hover:scale-105" style="${currentWritingStep === 0 ? 'visibility: hidden;' : ''}">Anterior</button>
-                                <button id="next-writing-step-btn" class="px-6 py-3 rounded-lg font-bold text-white bg-blue-500 hover:bg-blue-600 transition transform hover:scale-105">
+                                <button id="prev-writing-step-btn" class="px-6 py-3 rounded-lg font-bold text-white text-xl bg-gray-600 hover:bg-gray-700 transition transform hover:scale-105" style="${currentWritingStep === 0 ? 'visibility: hidden;' : ''}">Anterior</button>
+                                <button id="next-writing-step-btn" class="px-6 py-3 rounded-lg font-bold text-white text-xl bg-blue-500 hover:bg-blue-600 transition transform hover:scale-105">
                                     ${currentWritingStep < GUIA_ESCRITURA_STEPS.length - 1 ? 'Siguiente' : 'Terminar'}
                                 </button>
                             </div>
@@ -485,7 +483,7 @@
                         `).join('')}
                     </div>
                     <div class="flex justify-center mt-8">
-                        <button id="close-summary-btn" class="px-8 py-4 rounded-full font-bold text-white bg-red-600 hover:bg-red-700 transition transform hover:scale-105 shadow-xl">
+                        <button id="close-summary-btn" class="px-8 py-4 rounded-full font-bold text-white text-2xl bg-red-600 hover:bg-red-700 transition transform hover:scale-105 shadow-xl">
                             Cerrar
                         </button>
                     </div>
