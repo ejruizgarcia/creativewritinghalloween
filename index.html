@@ -252,11 +252,11 @@
                     <div class="flex-grow p-10 bg-gray-900 flex flex-col">
                         <div class="p-8 rounded-2xl shadow-xl flex-grow flex flex-col justify-between border-4 ${borderColor}">
                             <div>
-                                <h3 class="text-5xl font-extrabold mb-6 text-white">${currentStep.titulo}</h3>
-                                <p class="text-2xl mb-8 text-gray-300">${currentStep.instruccion}</p>
+                                <h3 class="text-6xl font-extrabold mb-6 text-white">${currentStep.titulo}</h3>
+                                <p class="text-3xl mb-8 text-gray-300">${currentStep.instruccion}</p>
                                 <div class="flex items-start bg-gray-800 p-6 rounded-lg border-l-4 border-yellow-500">
-                                    <span class="text-yellow-400 text-2xl font-bold mr-4">💡</span>
-                                    <p class="text-lg text-gray-300">${currentStep.pista}</p>
+                                    <span class="text-yellow-400 text-3xl font-bold mr-4">💡</span>
+                                    <p class="text-xl text-gray-300">${currentStep.pista}</p>
                                 </div>
                             </div>
                             <div class="flex justify-between mt-8">
@@ -327,11 +327,11 @@
                         ${GUIA_ESCRITURA.map((step, index) => `
                             <div class="p-6 rounded-2xl shadow-xl flex flex-col justify-between border-4 ${plotColors[index] || 'border-blue-500'}">
                                 <div>
-                                    <h3 class="text-3xl font-bold mb-4">${step.titulo}</h3>
-                                    <p class="text-xl mb-4 text-gray-300">${step.instruccion}</p>
+                                    <h3 class="text-4xl font-bold mb-4">${step.titulo}</h3>
+                                    <p class="text-2xl mb-4 text-gray-300">${step.instruccion}</p>
                                     <div class="flex items-start bg-gray-800 p-3 rounded-lg border-l-4 border-yellow-500">
                                         <span class="text-yellow-400 font-bold mr-2">💡</span>
-                                        <p class="text-md text-gray-400">${step.pista}</p>
+                                        <p class="text-lg text-gray-400">${step.pista}</p>
                                     </div>
                                 </div>
                             </div>
@@ -454,7 +454,7 @@
 
             const overlayHtml = document.createElement('div');
             overlayHtml.id = 'timer-overlay';
-            overlayHtml.className = 'movable-timer bg-gray-800 text-white rounded-xl shadow-2xl p-6 w-72';
+            overlayHtml.className = 'movable-timer bg-gray-800 bg-opacity-80 border-2 border-blue-600 text-white rounded-xl shadow-2xl p-6 w-80';
             overlayHtml.style.left = `${timerPosition.x}px`;
             overlayHtml.style.top = `${timerPosition.y}px`;
             
@@ -463,12 +463,32 @@
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
                 <h3 class="text-xl font-bold mb-4 text-center">Temporizador</h3>
-                <div class="flex justify-center items-center gap-2 mb-4">
-                    <button id="decrease-time-btn" class="text-2xl font-bold p-2 hover:bg-gray-700 rounded-full">-</button>
-                    <div class="text-5xl font-mono text-center w-36">
-                        <span id="timer-minutes">${String(minutes).padStart(2, '0')}</span>:<span id="timer-seconds">${String(seconds).padStart(2, '0')}</span>
+                <div class="flex justify-center items-center gap-4 mb-4">
+                    <!-- Controles para minutos -->
+                    <div class="flex flex-col items-center">
+                        <div class="flex gap-2">
+                            <button id="decrease-minutes-btn" class="text-2xl font-bold p-2 hover:bg-gray-700 rounded-full w-10">-</button>
+                            <button id="increase-minutes-btn" class="text-2xl font-bold p-2 hover:bg-gray-700 rounded-full w-10">+</button>
+                        </div>
+                        <div class="text-6xl font-mono text-center w-24">
+                            <span id="timer-minutes">${String(minutes).padStart(2, '0')}</span>
+                        </div>
+                        <span class="text-gray-400 text-sm">Minutos</span>
                     </div>
-                    <button id="increase-time-btn" class="text-2xl font-bold p-2 hover:bg-gray-700 rounded-full">+</button>
+
+                    <div class="text-6xl font-mono">:</div>
+                    
+                    <!-- Controles para segundos -->
+                    <div class="flex flex-col items-center">
+                        <div class="flex gap-2">
+                            <button id="decrease-seconds-btn" class="text-2xl font-bold p-2 hover:bg-gray-700 rounded-full w-10">-</button>
+                            <button id="increase-seconds-btn" class="text-2xl font-bold p-2 hover:bg-gray-700 rounded-full w-10">+</button>
+                        </div>
+                        <div class="text-6xl font-mono text-center w-24">
+                            <span id="timer-seconds">${String(seconds).padStart(2, '0')}</span>
+                        </div>
+                        <span class="text-gray-400 text-sm">Segundos</span>
+                    </div>
                 </div>
                 <div class="flex justify-center gap-4">
                     <button id="start-pause-btn" class="p-3 rounded-full bg-blue-500 hover:bg-blue-600 transition">
@@ -508,15 +528,27 @@
                 document.getElementById('play-icon').classList.remove('hidden');
                 document.getElementById('pause-icon').classList.add('hidden');
             });
-            document.getElementById('increase-time-btn').addEventListener('click', () => {
+            document.getElementById('increase-minutes-btn').addEventListener('click', () => {
                 if (!isRunning && minutes < 99) {
                     minutes++;
                     updateTimerDisplay();
                 }
             });
-            document.getElementById('decrease-time-btn').addEventListener('click', () => {
+            document.getElementById('decrease-minutes-btn').addEventListener('click', () => {
                 if (!isRunning && minutes > 0) {
                     minutes--;
+                    updateTimerDisplay();
+                }
+            });
+            document.getElementById('increase-seconds-btn').addEventListener('click', () => {
+                if (!isRunning) {
+                    seconds = (seconds + 10) % 60;
+                    updateTimerDisplay();
+                }
+            });
+            document.getElementById('decrease-seconds-btn').addEventListener('click', () => {
+                if (!isRunning) {
+                    seconds = (seconds - 10 + 60) % 60;
                     updateTimerDisplay();
                 }
             });
